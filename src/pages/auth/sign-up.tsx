@@ -6,12 +6,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TSignUp, userInputSchema } from '~/types/auth';
 import { trpc } from '~/utils/trpc';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import styles from '~/styles/Auth.module.css';
+import { useSession } from 'next-auth/react';
 
 const SignUp: NextPage = () => {
   const router = useRouter();
+  const { status } = useSession();
   const { register, handleSubmit } = useForm<TSignUp>({
     resolver: zodResolver(userInputSchema),
   });
@@ -28,21 +30,31 @@ const SignUp: NextPage = () => {
     [mutateAsync, router],
   );
 
+  useEffect(() => {
+    if (status === 'authenticated') router.push('/');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status]);
+
   return (
     <div className={styles.container}>
       <Head>
         <title>Create an account</title>
       </Head>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <div className={styles.wrapper}>
         <h1 className={styles.title}>Create an account</h1>
-        <label htmlFor="username">Username</label>
-        <input type="text" id="username" {...register('name')} />
-        <label htmlFor="password">Password</label>
-        <input type="password" id="password" {...register('password')} />
-        <button className={styles.submitBtn} type="submit">
-          Sign Up
-        </button>
-      </form>
+        <div className={styles.formContainer}>
+          <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+            <label htmlFor="username">Username</label>
+            <input type="text" id="username" {...register('name')} />
+            <label htmlFor="password">Password</label>
+            <input type="password" id="password" {...register('password')} />
+            <button className={styles.submitBtn} type="submit">
+              Sign Up
+            </button>
+            <Link href="/auth/login">Sign in to an existing account</Link>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

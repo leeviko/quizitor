@@ -13,10 +13,16 @@
 
   --accent-hover: rgb(53, 182, 105);
 
+  --blue: rgb(62, 65, 217);
+
   --pad: 3rem;
 }
 
 main {
   padding: 0 var(--pad);
   font-family: var(--poppins);
+}
+
+a {
+  color: var(--blue);
 }
