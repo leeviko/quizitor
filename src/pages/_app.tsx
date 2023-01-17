@@ -1,29 +1,41 @@
-import type { NextPage } from 'next';
 import type { AppType, AppProps } from 'next/app';
-import type { ReactElement, ReactNode } from 'react';
-import { DefaultLayout } from '~/components/DefaultLayout';
 import { trpc } from '~/utils/trpc';
 import { SessionProvider } from 'next-auth/react';
 
-export type NextPageWithLayout<
-  TProps = Record<string, unknown>,
-  TInitialProps = TProps,
-> = NextPage<TProps, TInitialProps> & {
-  getLayout?: (page: ReactElement) => ReactNode;
+import '../styles/globals.css';
+import { DefaultLayout } from '~/layouts/DefaultLayout';
+import { NextComponentType, NextPage, NextPageContext } from 'next';
+import Auth, { AuthEnabledComponentConfig } from '~/components/Auth';
+
+export type PageAuthOpts = {
+  auth?: { role: 'USER' | 'ADMIN' };
 };
 
-type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout;
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type NextPageWithAuth<P = {}, IP = P> = NextPage<P, IP> & PageAuthOpts;
+
+type AppAuthProps = AppProps & {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
+  Component: NextComponentType<NextPageContext, any, {}> &
+    Partial<AuthEnabledComponentConfig>;
 };
 
-const MyApp = (({ Component, pageProps }: AppPropsWithLayout) => {
-  const getLayout =
-    Component.getLayout ?? ((page) => <DefaultLayout>{page}</DefaultLayout>);
-
-  return getLayout(
-    <SessionProvider session={pageProps.session}>
-      <Component {...pageProps} />
-    </SessionProvider>,
+const MyApp = (({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppAuthProps) => {
+  return (
+    <SessionProvider session={session}>
+      <DefaultLayout>
+        {Component.auth ? (
+          <Auth opts={Component.auth}>
+            <Component {...pageProps} />
+          </Auth>
+        ) : (
+          <Component {...pageProps} />
+        )}
+      </DefaultLayout>
+    </SessionProvider>
   );
 }) as AppType;
 

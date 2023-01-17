@@ -1,0 +1,29 @@
+.nav {
+  padding: 0.25rem var(--pad);
+  height: 50px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  background-color: var(--accent-0-2);
+  font-family: var(--poppins);
+}
+
+.logo {
+  color: rgba(0, 0, 0, 0.8);
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-family: var(--overpass);
+  font-weight: 600;
+}
+
+.items {
+  font-size: 0.9rem;
+  position: absolute;
+  right: var(--pad);
+}
+
+.items a {
+  color: rgba(0, 0, 0, 0.8);
+  margin-left: 1rem;
+  text-decoration: none;
+}

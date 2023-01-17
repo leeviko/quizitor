@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --accent: rgb(62, 217, 124);
+  --accent-rgb: 62, 217, 124;
+  --accent-0-2: rgba(var(--accent-rgb), 0.2);
+  --accent-0-5: rgba(var(--accent-rgb), 0.5);
+  --accent-0-8: rgba(var(--accent-rgb), 0.8);
+
+  --accent-hover: rgb(53, 182, 105);
+
+  --pad: 3rem;
+}
+
+main {
+  padding: 0 var(--pad);
+  font-family: var(--poppins);
+}

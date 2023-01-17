@@ -1,0 +1,55 @@
+.header {
+  position: absolute;
+  width: 100%;
+  top: 30%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.wrapper {
+  width: 500px;
+}
+
+.text {
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.text span {
+  color: var(--accent);
+}
+
+.actions {
+  margin-top: 1rem;
+}
+
+.defaultBtn {
+  transition: 0.15s;
+  color: rgba(0, 0, 0, 0.8);
+  font-family: inherit;
+  background-color: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.defaultBtn a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.defaultBtn:hover,
+.defaultBtn.outline:hover {
+  cursor: pointer;
+  border-color: var(--accent-hover);
+  background-color: var(--accent-hover);
+}
+
+.defaultBtn:first-child {
+  margin-right: 1rem;
+}
+
+.defaultBtn.outline {
+  background: none;
+}

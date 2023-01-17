@@ -11,6 +11,7 @@ async function main() {
     create: {
       id: userId,
       name: 'Pekka69',
+      password: '123456',
     },
     update: {},
   });

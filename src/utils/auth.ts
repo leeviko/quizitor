@@ -1,9 +1,8 @@
 import { prisma } from '~/server/prisma';
-import { NextAuthOptions, unstable_getServerSession } from 'next-auth';
+import { NextAuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { userInputSchema } from '~/server/routers/user';
 import bcrypt from 'bcrypt';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { userInputSchema } from '~/types/auth';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -31,6 +30,7 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
             name: user.name,
             role: user.role,
+            createdAt: user.createdAt,
           };
         }
         return null;
@@ -42,8 +42,16 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.name = user.name;
+        token.role = user.role;
       }
       return token;
+    },
+    session: async ({ session, token }) => {
+      if (token) {
+        session.user.id = token.id;
+        session.user.role = token.role;
+      }
+      return session;
     },
   },
   secret: process.env.JWT_SECRET,
@@ -51,25 +59,43 @@ export const authOptions: NextAuthOptions = {
     maxAge: 7 * 24 * 30 * 60, // 7 days
   },
   pages: {
-    signIn: '/login',
-    newUser: '/sign-up',
+    signIn: '/auth/login',
+    newUser: '/auth/sign-up',
   },
 };
 
-export const requireAuth =
-  (func: GetServerSideProps) => async (ctx: GetServerSidePropsContext) => {
-    const session = await unstable_getServerSession(
-      ctx.req,
-      ctx.res,
-      authOptions,
-    );
-    if (!session) {
-      return {
-        redirect: {
-          destination: '/login',
-          permanent: false,
-        },
-      };
-    }
-    return await func(ctx);
-  };
+// export const requireAuth =
+//   (func: GetServerSideProps) => async (ctx: GetServerSidePropsContext) => {
+//     const session = await unstable_getServerSession(
+//       ctx.req,
+//       ctx.res,
+//       authOptions,
+//     );
+//     if (!session) {
+//       return {
+//         redirect: {
+//           destination: '/login',
+//           permanent: false,
+//         },
+//       };
+//     }
+//     return await func(ctx);
+//   };
+
+// export const requireAdmin =
+//   (func: GetServerSideProps) => async (ctx: GetServerSidePropsContext) => {
+//     const session = await unstable_getServerSession(
+//       ctx.req,
+//       ctx.res,
+//       authOptions,
+//     );
+//     if (!session || session.user.role !== 'ADMIN') {
+//       return {
+//         redirect: {
+//           destination: '/',
+//           permanent: true,
+//         },
+//       };
+//     }
+//     return await func(ctx);
+//   };

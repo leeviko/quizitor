@@ -4,17 +4,13 @@ import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '~/server/prisma';
 import bcrypt from 'bcrypt';
+import { userInputSchema } from '~/types/auth';
 
 const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   id: true,
   name: true,
   createdAt: true,
   role: true,
-});
-
-export const userInputSchema = z.object({
-  name: z.string().min(3),
-  password: z.string().min(6),
 });
 
 export const userRouter = router({
@@ -52,23 +48,17 @@ export const userRouter = router({
       });
     }
 
-    bcrypt.hash(password, 10, async (err, hash) => {
-      if (err) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to register user',
-        });
-      }
+    const hash = await bcrypt.hash(password, 10);
 
-      const result = await prisma.user.create({
-        data: { name, password: hash },
-      });
-
-      return {
-        status: 200,
-        result,
-        message: 'User created successfully',
-      };
+    const result = await prisma.user.create({
+      data: { name, password: hash },
+      select: defaultUserSelect,
     });
+
+    return {
+      status: 201,
+      result,
+      message: 'User created successfully',
+    };
   }),
 });
