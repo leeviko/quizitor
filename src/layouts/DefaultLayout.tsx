@@ -2,6 +2,9 @@ import Head from 'next/head';
 import { ReactNode } from 'react';
 import { Poppins, Overpass } from '@next/font/google';
 import Navbar from '~/components/Navbar';
+
+import styles from '../styles/Layout.module.css';
+
 type DefaultLayoutProps = { children: ReactNode };
 
 const poppins = Poppins({
@@ -24,7 +27,7 @@ export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
       </Head>
       <div className={`${poppins.variable} ${overpass.variable}`}>
         <Navbar />
-        <main>{children}</main>
+        <main className={styles.container}>{children}</main>
       </div>
     </>
   );

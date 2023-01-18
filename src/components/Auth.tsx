@@ -30,12 +30,14 @@ const Auth: any = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, status]);
 
-  if (opts.role === 'ADMIN' && user && user.role !== 'ADMIN') {
-    router.push('/');
-    return;
-  }
+  if (user) {
+    if (opts.role === 'ADMIN' && user.role !== 'ADMIN') {
+      router.push('/');
+      return;
+    }
 
-  if (user) return children;
+    return children;
+  }
 
   return <div>loading...</div>;
 };

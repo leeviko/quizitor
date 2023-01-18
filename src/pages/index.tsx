@@ -1,23 +1,21 @@
-import Link from 'next/link';
-import styles from '../styles/Home.module.css';
+import { useSession } from 'next-auth/react';
+import { AuthHeader, Header } from '~/components/Header';
 
 const Home = () => {
+  const { data, status } = useSession();
+
   return (
-    <header className={styles.header}>
-      <div className={styles.wrapper}>
-        <p className={styles.text}>
-          Create custom <span>quizzes</span> for faster <span>learning</span>
-        </p>
-        <div className={styles.actions}>
-          <button className={`${styles.defaultBtn} ${styles.outline}`}>
-            Browse
-          </button>
-          <button className={styles.defaultBtn}>
-            <Link href="/auth/sign-up">Get Started</Link>
-          </button>
-        </div>
-      </div>
-    </header>
+    <>
+      {status !== 'loading' && (
+        <>
+          {status === 'authenticated' ? (
+            <AuthHeader username={data.user.name} />
+          ) : (
+            <Header />
+          )}
+        </>
+      )}
+    </>
   );
 };
 
