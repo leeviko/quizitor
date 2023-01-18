@@ -1,5 +1,6 @@
 import { useSession } from 'next-auth/react';
 import { AuthHeader, Header } from '~/components/Header';
+import Recent from '~/components/Recent';
 
 const Home = () => {
   const { data, status } = useSession();
@@ -9,7 +10,10 @@ const Home = () => {
       {status !== 'loading' && (
         <>
           {status === 'authenticated' ? (
-            <AuthHeader username={data.user.name} />
+            <>
+              <AuthHeader username={data.user.name} />
+              <Recent />
+            </>
           ) : (
             <Header />
           )}

@@ -3,7 +3,7 @@ import styles from '../styles/Header.module.css';
 
 export const Header = () => {
   return (
-    <header className={`${styles.header} ${styles.notLogged}`}>
+    <header className={styles.notLogged}>
       <div className={styles.wrapper}>
         <p className={styles.text}>
           Create custom <span>quizzes</span> for faster <span>learning</span>
@@ -23,7 +23,7 @@ export const Header = () => {
 
 export const AuthHeader = ({ username }: { username: string }) => {
   return (
-    <header className={`${styles.header} ${styles.loggedIn}`}>
+    <header className={styles.loggedIn}>
       <div className={styles.wrapper}>
         <p className={styles.text}>
           Hello, <span>{username}</span>! What would you like to do?

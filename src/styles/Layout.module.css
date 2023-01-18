@@ -1,6 +1,7 @@
 .container {
   width: 55%;
+  max-width: 850px;
   margin: 0 auto;
   position: relative;
-  margin-top: 4rem;
+  margin-top: 5rem;
 }

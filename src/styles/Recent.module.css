@@ -1,0 +1,13 @@
+.container {
+  margin: 3rem 0;
+}
+
+.container h2 {
+  font-weight: 400;
+}
+
+.items {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto auto;
+}
