@@ -33,7 +33,7 @@ export const AuthHeader = ({ username }: { username: string }) => {
             Browse
           </button>
           <button className={styles.defaultBtn}>
-            <Link href="/profile/create">Create Quizzes</Link>
+            <Link href="/create-quiz">Create Quizzes</Link>
           </button>
         </div>
       </div>

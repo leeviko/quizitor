@@ -9,7 +9,7 @@
  */
 
 import { Context } from './context';
-import { initTRPC } from '@trpc/server';
+import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 
 const t = initTRPC.context<Context>().create({
@@ -46,3 +46,30 @@ export const middleware = t.middleware;
  * @see https://trpc.io/docs/v10/merging-routers
  */
 export const mergeRouters = t.mergeRouters;
+
+const isAuth = middleware(({ next, ctx }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+
+  return next({
+    ctx: {
+      user: ctx.session.user,
+    },
+  });
+});
+
+const isAdmin = middleware(({ next, ctx }) => {
+  if (!ctx.session?.user || ctx.session.user.role !== 'ADMIN') {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+
+  return next({
+    ctx: {
+      user: ctx.session.user,
+    },
+  });
+});
+
+export const protectedProcedure = publicProcedure.use(isAuth);
+export const adminProtectedProcedure = publicProcedure.use(isAdmin);

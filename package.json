@@ -7,7 +7,7 @@
     "build-postgres": "migrate && next build",
     "start": "next start",
     "lint": "eslint --ext \".js,.ts,.tsx\" --report-unused-disable-directives --report-unused-disable-directives src",
-    "migrate-dev": "prisma migrate dev",
+    "migrate-dev": "dotenv -e .env.local -- prisma migrate dev",
     "migrate": "prisma migrate deploy",
     "postinstall": "prisma generate"
   },
@@ -31,6 +31,7 @@
     "@trpc/server": "^10.9.0",
     "bcrypt": "^5.1.0",
     "clsx": "^1.1.1",
+    "dotenv-cli": "^6.0.0",
     "next": "^13.0.0",
     "next-auth": "^4.18.8",
     "react": "^18.2.0",

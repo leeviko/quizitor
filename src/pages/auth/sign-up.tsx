@@ -36,7 +36,7 @@ const SignUp: NextPage = () => {
   }, [status]);
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} center`}>
       <Head>
         <title>Create an account</title>
       </Head>

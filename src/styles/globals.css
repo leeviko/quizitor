@@ -15,6 +15,10 @@
 
   --blue: rgb(62, 65, 217);
 
+  --light-blue: rgb(62, 180, 217);
+  --light-blue-rgb: 62, 180, 217;
+  --light-blue-0-5: rgba(var(--light-blue-rgb), 0.5);
+
   --pad: 3rem;
 }
 
@@ -24,4 +28,12 @@ main {
 
 a {
   color: var(--blue);
+}
+
+.default .center {
+  width: 55%;
+  max-width: 850px;
+  margin: 0 auto;
+  position: relative;
+  margin-top: 5rem;
 }

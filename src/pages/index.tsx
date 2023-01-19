@@ -7,18 +7,20 @@ const Home = () => {
 
   return (
     <>
-      {status !== 'loading' && (
-        <>
-          {status === 'authenticated' ? (
-            <>
-              <AuthHeader username={data.user.name} />
-              <Recent />
-            </>
-          ) : (
-            <Header />
-          )}
-        </>
-      )}
+      <div className="center">
+        {status !== 'loading' && (
+          <>
+            {status === 'authenticated' ? (
+              <>
+                <AuthHeader username={data.user.name} />
+                <Recent />
+              </>
+            ) : (
+              <Header />
+            )}
+          </>
+        )}
+      </div>
     </>
   );
 };

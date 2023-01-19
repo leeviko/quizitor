@@ -3,8 +3,6 @@ import { ReactNode } from 'react';
 import { Poppins, Overpass } from '@next/font/google';
 import Navbar from '~/components/Navbar';
 
-import styles from '../styles/Layout.module.css';
-
 type DefaultLayoutProps = { children: ReactNode };
 
 const poppins = Poppins({
@@ -18,17 +16,19 @@ const overpass = Overpass({
   variable: '--overpass',
 });
 
-export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
+const DefaultLayout = ({ children }: DefaultLayoutProps) => {
   return (
     <>
       <Head>
         <title>Quizitor</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={`${poppins.variable} ${overpass.variable}`}>
+      <div className={`${poppins.variable} ${overpass.variable} default`}>
         <Navbar />
-        <main className={styles.container}>{children}</main>
+        <main>{children}</main>
       </div>
     </>
   );
 };
+
+export default DefaultLayout;

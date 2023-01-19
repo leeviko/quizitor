@@ -27,7 +27,7 @@ const Login: NextPage = () => {
   }, [status]);
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} center`}>
       <Head>
         <title>Login</title>
       </Head>
