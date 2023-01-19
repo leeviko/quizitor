@@ -1,0 +1,96 @@
+.content {
+  padding: var(--modal-pad);
+  color: rgba(0, 0, 0, 0.8);
+  height: 100%;
+}
+
+.titleInput {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.titleInput input {
+  font-size: 1.25rem;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: 600;
+  border-radius: 0.25rem;
+  padding: 0.1rem;
+  font-family: inherit;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 150px 150px;
+  grid-column-gap: 2rem;
+  grid-row-gap: 2rem;
+}
+
+.choiceTitle span {
+  color: var(--red);
+}
+
+.choice {
+  position: relative;
+}
+
+.choice div {
+  height: 100%;
+}
+
+.choiceInputContainer {
+  background-color: var(--accent-0-5);
+  border: 2px solid var(--accent);
+}
+
+.choice input {
+  font-family: inherit;
+  top: 50%;
+  left: 50%;
+  position: relative;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  border: none;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+.actions {
+  display: flex;
+  grid-column-start: 2;
+  justify-self: end;
+  margin-top: 1rem;
+}
+
+.actions button {
+  font-family: inherit;
+}
+
+.actions .return {
+  cursor: pointer;
+  border: none;
+  background: none;
+  margin-right: 1.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.defaultBtn {
+  transition: 0.15s;
+  color: rgba(0, 0, 0, 0.8);
+  font-family: inherit;
+  background-color: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.defaultBtn:hover {
+  cursor: pointer;
+  background-color: var(--accent-hover);
+  border: 2px solid var(--accent-hover);
+}

@@ -1,5 +1,5 @@
 .content {
-  padding: 2rem 5rem;
+  padding: var(--modal-pad);
   color: rgba(0, 0, 0, 0.8);
 }
 

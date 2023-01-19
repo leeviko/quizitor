@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { TQuestion } from '~/pages/create-quiz';
 
 type Props = {
+  setMode: Dispatch<SetStateAction<'overview' | 'new'>>;
   setTitle: Dispatch<SetStateAction<string>>;
   setIsPrivate: Dispatch<SetStateAction<boolean>>;
   title: string;
@@ -13,6 +14,7 @@ type Props = {
 };
 
 const QuizOverview = ({
+  setMode,
   setTitle,
   setIsPrivate,
   title,
@@ -60,7 +62,10 @@ const QuizOverview = ({
               height={192}
             />
           </div>
-          <button className={`${styles.defaultBtn} ${styles.newBtn}`}>
+          <button
+            className={`${styles.defaultBtn} ${styles.newBtn}`}
+            onClick={() => setMode('new')}
+          >
             Add a Question!
           </button>
         </div>

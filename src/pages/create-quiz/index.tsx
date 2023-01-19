@@ -1,13 +1,14 @@
-import { createContext, useState } from 'react';
+import { useState } from 'react';
 import ModalLayout from '~/layouts/ModalLayout';
 
 import QuizOverview from '~/components/QuizOverview';
+import NewQuestion from '~/components/NewQuestion';
 
-const QuizContext = createContext({
-  title: '',
-  isPrivate: true,
-  questions: [{}],
-});
+// const QuizContext = createContext({
+//   title: '',
+//   isPrivate: true,
+//   questions: [{}],
+// });
 
 export type TQuestion = {
   question: string;
@@ -16,22 +17,31 @@ export type TQuestion = {
 };
 
 const Overview = () => {
+  const [mode, setMode] = useState<'overview' | 'new'>('overview');
   const [title, setTitle] = useState('');
   const [isPrivate, setIsPrivate] = useState(true);
   const [questions, setQuestions] = useState<Array<TQuestion>>([]);
 
   return (
-    <QuizContext.Provider value={{ title, isPrivate, questions }}>
-      <ModalLayout pageProps={{ title: 'Create new Quiz' }}>
-        <QuizOverview
-          setTitle={setTitle}
-          setIsPrivate={setIsPrivate}
-          isPrivate={isPrivate}
-          title={title}
-          questions={questions}
-        />
-      </ModalLayout>
-    </QuizContext.Provider>
+    <ModalLayout
+      pageProps={{
+        title: mode === 'overview' ? 'Create new Quiz' : 'Add a Question',
+      }}
+    >
+      <>
+        {mode === 'overview' && (
+          <QuizOverview
+            setMode={setMode}
+            setTitle={setTitle}
+            setIsPrivate={setIsPrivate}
+            isPrivate={isPrivate}
+            title={title}
+            questions={questions}
+          />
+        )}
+        {mode === 'new' && <NewQuestion />}
+      </>
+    </ModalLayout>
   );
 };
 

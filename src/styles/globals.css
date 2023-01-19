@@ -19,7 +19,10 @@
   --light-blue-rgb: 62, 180, 217;
   --light-blue-0-5: rgba(var(--light-blue-rgb), 0.5);
 
+  --red: #d93e3e;
+
   --pad: 3rem;
+  --modal-pad: 2rem 5rem;
 }
 
 main {
