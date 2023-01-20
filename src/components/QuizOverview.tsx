@@ -2,15 +2,16 @@ import Image from 'next/image';
 import styles from '../styles/QuizOverview.module.css';
 import QuizItem from '~/components/QuizItem';
 import { Dispatch, SetStateAction } from 'react';
-import { TQuestion } from '~/pages/create-quiz';
+import { Mode, TQuestion } from '~/pages/create-quiz';
 
 type Props = {
-  setMode: Dispatch<SetStateAction<'overview' | 'new'>>;
+  setMode: Dispatch<SetStateAction<Mode>>;
   setTitle: Dispatch<SetStateAction<string>>;
   setIsPrivate: Dispatch<SetStateAction<boolean>>;
   title: string;
   isPrivate: boolean;
   questions: TQuestion[];
+  mode: Mode;
 };
 
 const QuizOverview = ({
@@ -20,9 +21,18 @@ const QuizOverview = ({
   title,
   isPrivate,
   questions,
+  mode,
 }: Props) => {
+  const handleModeChange = () => {
+    setMode(Mode.New);
+  };
+
   return (
-    <div className={styles.content}>
+    <div
+      className={`${styles.content} ${
+        mode === 'overview' ? styles.show : styles.hidden
+      }`}
+    >
       <div className={styles.titleInput}>
         <span className={styles.title}>Title</span>
         <input
@@ -44,11 +54,15 @@ const QuizOverview = ({
                 key={item.question + i}
                 order={i + 1}
                 question={item.question}
-                answer={item.correct}
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                answer={item.choices[item.correct - 1]!.value}
               />
             ))}
           </div>
-          <button className={`${styles.defaultBtn} ${styles.newBtn}`}>
+          <button
+            className={`${styles.defaultBtn} ${styles.newBtn}`}
+            onClick={handleModeChange}
+          >
             New
           </button>
         </div>
@@ -64,7 +78,7 @@ const QuizOverview = ({
           </div>
           <button
             className={`${styles.defaultBtn} ${styles.newBtn}`}
-            onClick={() => setMode('new')}
+            onClick={handleModeChange}
           >
             Add a Question!
           </button>

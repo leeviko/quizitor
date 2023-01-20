@@ -20,9 +20,16 @@
   --light-blue-0-5: rgba(var(--light-blue-rgb), 0.5);
 
   --red: #d93e3e;
+  --red-rgb: 217, 62, 62;
+  --red-0-5: rgba(var(--red-rgb), 0.5);
+  --red-0-2: rgba(var(--red-rgb), 0.2);
 
   --pad: 3rem;
   --modal-pad: 2rem 5rem;
+}
+
+body {
+  overflow-x: hidden;
 }
 
 main {

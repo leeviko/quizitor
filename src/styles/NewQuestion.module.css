@@ -1,7 +1,20 @@
 .content {
+  transition: 0.15s;
   padding: var(--modal-pad);
   color: rgba(0, 0, 0, 0.8);
   height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+.content.show {
+  right: 0;
+  opacity: 1;
+}
+
+.content.hidden {
+  right: -100%;
+  opacity: 0;
 }
 
 .titleInput {
@@ -43,13 +56,12 @@
 
 .choiceInputContainer {
   background-color: var(--accent-0-5);
-  border: 2px solid var(--accent);
 }
 
 .choice input {
   font-family: inherit;
-  top: 50%;
   left: 50%;
+  top: 50%;
   position: relative;
   transform: translate(-50%, -50%);
   width: 90%;
@@ -57,6 +69,24 @@
   text-align: center;
   padding: 1rem;
   border-radius: 0.25rem;
+}
+
+.correctContainer {
+  margin: 0.5rem;
+  border-radius: 50%;
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2px solid black;
+  background: none;
+}
+
+.correctContainer:hover {
+  cursor: pointer;
+}
+
+.correctContainer img {
+  margin: -2px 0 0 -2px;
 }
 
 .actions {
@@ -93,4 +123,21 @@
   cursor: pointer;
   background-color: var(--accent-hover);
   border: 2px solid var(--accent-hover);
+}
+
+.errors {
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: center;
+  border-radius: 0.25rem;
+  bottom: 0;
+  position: absolute;
+  width: calc(100% - 10rem);
+  padding: 1rem;
+  margin-bottom: 2rem;
+  background-color: var(--red-0-5);
+}
+
+.errors ul {
+  list-style: none;
 }
