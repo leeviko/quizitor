@@ -2,7 +2,7 @@ import Image from 'next/image';
 import styles from '../styles/QuizOverview.module.css';
 import QuizItem from '~/components/QuizItem';
 import { Dispatch, SetStateAction } from 'react';
-import { Mode, TQuestion } from '~/pages/create-quiz';
+import { Mode, TEditQuestion, TQuestion } from '~/pages/create-quiz';
 
 type Props = {
   setMode: Dispatch<SetStateAction<Mode>>;
@@ -11,7 +11,9 @@ type Props = {
   title: string;
   isPrivate: boolean;
   questions: TQuestion[];
+  setQuestions: Dispatch<SetStateAction<TQuestion[]>>;
   mode: Mode;
+  setEdit: Dispatch<SetStateAction<TEditQuestion | null>>;
 };
 
 const QuizOverview = ({
@@ -21,9 +23,18 @@ const QuizOverview = ({
   title,
   isPrivate,
   questions,
+  setQuestions,
   mode,
+  setEdit,
 }: Props) => {
-  const handleModeChange = () => {
+  const handleDelete = (index: number) => {
+    setQuestions(questions.filter((_item, i) => i !== index));
+  };
+
+  const handleEdit = (index: number) => {
+    console.log(questions[index]);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    setEdit({ ...questions[index]!, index });
     setMode(Mode.New);
   };
 
@@ -51,17 +62,20 @@ const QuizOverview = ({
           <div className={styles.gridItems}>
             {questions.map((item, i) => (
               <QuizItem
-                key={item.question + i}
+                key={item.title + i}
+                index={i}
                 order={i + 1}
-                question={item.question}
+                title={item.title}
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 answer={item.choices[item.correct - 1]!.value}
+                handleDelete={handleDelete}
+                handleEdit={handleEdit}
               />
             ))}
           </div>
           <button
             className={`${styles.defaultBtn} ${styles.newBtn}`}
-            onClick={handleModeChange}
+            onClick={() => setMode(Mode.New)}
           >
             New
           </button>
@@ -78,7 +92,7 @@ const QuizOverview = ({
           </div>
           <button
             className={`${styles.defaultBtn} ${styles.newBtn}`}
-            onClick={handleModeChange}
+            onClick={() => setMode(Mode.New)}
           >
             Add a Question!
           </button>

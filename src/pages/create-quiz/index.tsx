@@ -10,7 +10,7 @@ export type TChoice = {
 };
 
 export type TQuestion = {
-  question: string;
+  title: string;
   correct: number;
   choices: Array<TChoice>;
 };
@@ -20,8 +20,13 @@ export enum Mode {
   New = 'new',
 }
 
+export type TEditQuestion = TQuestion & {
+  index: number;
+};
+
 const Overview = () => {
   const [mode, setMode] = useState<Mode>(Mode.Overview);
+  const [edit, setEdit] = useState<TEditQuestion | null>(null);
   const [title, setTitle] = useState('');
   const [isPrivate, setIsPrivate] = useState(true);
   const [questions, setQuestions] = useState<Array<TQuestion>>([]);
@@ -40,13 +45,17 @@ const Overview = () => {
           isPrivate={isPrivate}
           title={title}
           questions={questions}
+          setQuestions={setQuestions}
           mode={mode}
+          setEdit={setEdit}
         />
         <NewQuestion
           setMode={setMode}
           mode={mode}
           questions={questions}
           setQuestions={setQuestions}
+          edit={edit}
+          setEdit={setEdit}
         />
       </div>
     </ModalLayout>

@@ -1,6 +1,12 @@
 import Image from 'next/image';
-import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
-import { Mode, TChoice, TQuestion } from '~/pages/create-quiz';
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
+import { Mode, TChoice, TEditQuestion, TQuestion } from '~/pages/create-quiz';
 
 import styles from '../styles/NewQuestion.module.css';
 
@@ -9,9 +15,18 @@ type Props = {
   mode: Mode;
   questions: Array<TQuestion>;
   setQuestions: Dispatch<SetStateAction<TQuestion[]>>;
+  edit: TEditQuestion | null;
+  setEdit: Dispatch<SetStateAction<TEditQuestion | null>>;
 };
 
-const NewQuestion = ({ setMode, mode, questions, setQuestions }: Props) => {
+const NewQuestion = ({
+  setMode,
+  mode,
+  questions,
+  setQuestions,
+  edit,
+  setEdit,
+}: Props) => {
   const [errors, setErrors] = useState<Array<string>>([]);
   const [title, setTitle] = useState('');
   const [correct, setCorrect] = useState<number>(-1);
@@ -31,6 +46,14 @@ const NewQuestion = ({ setMode, mode, questions, setQuestions }: Props) => {
     setChoices(newArr);
   };
 
+  useEffect(() => {
+    if (edit) {
+      setTitle(edit.title);
+      setCorrect(edit.correct);
+      setChoices(edit.choices);
+    }
+  }, [edit]);
+
   const clearValues = () => {
     setErrors([]);
     setTitle('');
@@ -41,6 +64,7 @@ const NewQuestion = ({ setMode, mode, questions, setQuestions }: Props) => {
       { order: 3, value: '' },
       { order: 4, value: '' },
     ]);
+    setEdit(null);
   };
 
   const handleAdd = () => {
@@ -51,9 +75,10 @@ const NewQuestion = ({ setMode, mode, questions, setQuestions }: Props) => {
     if (!choices[0]?.value || !choices[1]?.value) {
       errs = [...errs, 'First two choices must be set'];
     }
-    if (!correct) {
-      errs = [...errs, 'You must choose the correct answer'];
+    if (correct === -1) {
+      errs = [...errs, 'You must choose which is the correct answer'];
     } else if (!choices[correct - 1]?.value) {
+      console.log(correct);
       errs = [...errs, 'Correct choice cannot be empty'];
     }
     if (errs.length > 0) {
@@ -63,13 +88,17 @@ const NewQuestion = ({ setMode, mode, questions, setQuestions }: Props) => {
 
     const newQues = [...questions];
     const newQue: TQuestion = {
-      question: title,
+      title,
       correct,
       choices,
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    newQues.push(newQue);
+    if (edit) {
+      newQues[edit.index] = newQue;
+    } else {
+      newQues.push(newQue);
+    }
+
     setQuestions(newQues);
 
     clearValues();
@@ -84,6 +113,7 @@ const NewQuestion = ({ setMode, mode, questions, setQuestions }: Props) => {
   const handleSetCorrect = (item: any) => {
     if (item.order === correct) {
       setCorrect(-1);
+      return;
     }
     if (item.value) {
       setCorrect(item.order);
@@ -144,7 +174,7 @@ const NewQuestion = ({ setMode, mode, questions, setQuestions }: Props) => {
             <span>Return</span>
           </button>
           <button onClick={handleAdd} className={styles.defaultBtn}>
-            Add
+            {edit ? 'Update' : 'Add'}
           </button>
         </div>
         {errors.length > 0 && (

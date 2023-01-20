@@ -4,24 +4,34 @@ import styles from '../styles/QuizOverview.module.css';
 
 type Props = {
   order: number;
-  question: string;
+  index: number;
+  title: string;
   answer: string;
+  handleDelete: (index: number) => void;
+  handleEdit: (index: number) => void;
 };
 
-const QuizItem = ({ order, question, answer }: Props) => {
+const QuizItem = ({
+  index,
+  order,
+  title,
+  answer,
+  handleDelete,
+  handleEdit,
+}: Props) => {
   return (
     <div className={styles.item}>
       <div className={`${styles.left} ${styles.column}`}>
         <span className={styles.number}>{order}.</span>
-        <div className={`${styles.question} ${styles.text}`}>{question}</div>
+        <div className={`${styles.question} ${styles.text}`}>{title}</div>
       </div>
       <div className={`${styles.right} ${styles.column}`}>
         <div className={`${styles.answer} ${styles.text}`}>{answer}</div>
         <div className={styles.actions}>
-          <button>
+          <button onClick={() => handleEdit(index)}>
             <Image src="/icons/edit.svg" alt="Edit" width={24} height={24} />
           </button>
-          <button>
+          <button onClick={() => handleDelete(index)}>
             <Image
               src="/icons/delete.svg"
               alt="Delete"
