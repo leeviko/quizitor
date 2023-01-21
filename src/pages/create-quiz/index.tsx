@@ -4,15 +4,10 @@ import ModalLayout from '~/layouts/ModalLayout';
 import QuizOverview from '~/components/QuizOverview';
 import NewQuestion from '~/components/NewQuestion';
 
-export type TChoice = {
-  order: number;
-  value: string;
-};
-
 export type TQuestion = {
   title: string;
   correct: number;
-  choices: Array<TChoice>;
+  choices: string[];
 };
 
 export enum Mode {
@@ -25,11 +20,32 @@ export type TEditQuestion = TQuestion & {
 };
 
 const Overview = () => {
+  const [errors, setErrors] = useState<string[]>([]);
   const [mode, setMode] = useState<Mode>(Mode.Overview);
   const [edit, setEdit] = useState<TEditQuestion | null>(null);
   const [title, setTitle] = useState('');
   const [isPrivate, setIsPrivate] = useState(true);
   const [questions, setQuestions] = useState<Array<TQuestion>>([]);
+
+  const handleSave = () => {
+    let errs: string[] = [];
+    if (!title) {
+      errs = [...errs, 'Title must be set'];
+    }
+    if (questions.length === 0) {
+      errs = [...errs, 'There isnt any questions'];
+    }
+    if (questions.length > 50) {
+      errs = [...errs, 'Too many questions. Max is 50'];
+    }
+
+    if (errs.length > 0) {
+      setErrors(errs);
+      return;
+    }
+
+    console.log(questions);
+  };
 
   return (
     <ModalLayout
@@ -53,6 +69,7 @@ const Overview = () => {
           setQuestions={setQuestions}
           mode={mode}
           setEdit={setEdit}
+          handleSave={handleSave}
         />
         <NewQuestion
           setMode={setMode}

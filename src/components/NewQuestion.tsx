@@ -6,7 +6,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { Mode, TChoice, TEditQuestion, TQuestion } from '~/pages/create-quiz';
+import { Mode, TEditQuestion, TQuestion } from '~/pages/create-quiz';
 
 import styles from '../styles/NewQuestion.module.css';
 
@@ -30,18 +30,11 @@ const NewQuestion = ({
   const [errors, setErrors] = useState<Array<string>>([]);
   const [title, setTitle] = useState('');
   const [correct, setCorrect] = useState<number>(-1);
-  const [choices, setChoices] = useState<Array<TChoice>>([
-    { order: 1, value: '' },
-    { order: 2, value: '' },
-    { order: 3, value: '' },
-    { order: 4, value: '' },
-  ]);
+  const [choices, setChoices] = useState<string[]>(['', '', '', '']);
 
   const handleChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
     const newArr = [...choices];
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    newArr[index]!.value = e.target.value;
+    newArr[index] = e.target.value;
 
     setChoices(newArr);
   };
@@ -58,12 +51,7 @@ const NewQuestion = ({
     setErrors([]);
     setTitle('');
     setCorrect(-1);
-    setChoices([
-      { order: 1, value: '' },
-      { order: 2, value: '' },
-      { order: 3, value: '' },
-      { order: 4, value: '' },
-    ]);
+    setChoices(['', '', '', '']);
     setEdit(null);
   };
 
@@ -72,12 +60,12 @@ const NewQuestion = ({
     if (!title) {
       errs = [...errs, 'Title not set'];
     }
-    if (!choices[0]?.value || !choices[1]?.value) {
+    if (!choices[0] || !choices[1]) {
       errs = [...errs, 'First two choices must be set'];
     }
     if (correct === -1) {
       errs = [...errs, 'You must choose which is the correct answer'];
-    } else if (!choices[correct - 1]?.value) {
+    } else if (!choices[correct]) {
       errs = [...errs, 'Correct choice cannot be empty'];
     }
     if (errs.length > 0) {
@@ -109,13 +97,13 @@ const NewQuestion = ({
     setMode(Mode.Overview);
   };
 
-  const handleSetCorrect = (item: any) => {
-    if (item.order === correct) {
+  const handleSetCorrect = (index: number) => {
+    if (index === correct) {
       setCorrect(-1);
       return;
     }
-    if (item.value) {
-      setCorrect(item.order);
+    if (choices[index]) {
+      setCorrect(index);
     }
   };
 
@@ -137,18 +125,18 @@ const NewQuestion = ({
 
       <div className={styles.choices}>
         {choices.map((item, i) => (
-          <div key={item.order} className={styles.choice}>
+          <div key={i} className={styles.choice}>
             <div>
               <p className={styles.choiceTitle}>
-                {item.order}. choice
-                {item.order <= 2 && <span>*</span>}
+                {i + 1}. choice
+                {i + 1 <= 2 && <span>*</span>}
               </p>
               <div className={styles.choiceInputContainer}>
                 <button
                   className={styles.correctContainer}
-                  onClick={() => handleSetCorrect(item)}
+                  onClick={() => handleSetCorrect(i)}
                 >
-                  {correct === item.order && (
+                  {correct === i && (
                     <Image
                       src="/icons/check.svg"
                       alt="checkmark"
@@ -158,7 +146,7 @@ const NewQuestion = ({
                   )}
                 </button>
                 <input
-                  value={item.value}
+                  value={item}
                   onChange={(e) => handleChange(i, e)}
                   type="text"
                 />

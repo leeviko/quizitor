@@ -32,7 +32,7 @@ model Questions {
   title     String      @db.VarChar(100)
   quizId    String
   quiz      Quiz        @relation(fields: [quizId], references: [id])
-  correct   String
+  correct   Int
   choices   String[]
 }
 

@@ -3,7 +3,6 @@ import Image from 'next/image';
 import styles from '../styles/QuizOverview.module.css';
 
 type Props = {
-  order: number;
   index: number;
   title: string;
   answer: string;
@@ -13,7 +12,6 @@ type Props = {
 
 const QuizItem = ({
   index,
-  order,
   title,
   answer,
   handleDelete,
@@ -22,7 +20,7 @@ const QuizItem = ({
   return (
     <div className={styles.item}>
       <div className={`${styles.left} ${styles.column}`}>
-        <span className={styles.number}>{order}.</span>
+        <span className={styles.number}>{index + 1}.</span>
         <div className={`${styles.question} ${styles.text}`}>{title}</div>
       </div>
       <div className={`${styles.right} ${styles.column}`}>

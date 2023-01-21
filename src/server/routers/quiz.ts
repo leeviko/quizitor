@@ -10,7 +10,7 @@ export const quizInputSchema = z.object({
     .array(
       z.object({
         title: z.string(),
-        correct: z.string(),
+        correct: z.number(),
         choices: z.array(z.string()).min(2).max(4),
       }),
     )

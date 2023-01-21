@@ -14,6 +14,7 @@ type Props = {
   setQuestions: Dispatch<SetStateAction<TQuestion[]>>;
   mode: Mode;
   setEdit: Dispatch<SetStateAction<TEditQuestion | null>>;
+  handleSave: () => void;
 };
 
 const QuizOverview = ({
@@ -26,6 +27,7 @@ const QuizOverview = ({
   setQuestions,
   mode,
   setEdit,
+  handleSave,
 }: Props) => {
   const handleDelete = (index: number) => {
     setQuestions(questions.filter((_item, i) => i !== index));
@@ -63,10 +65,9 @@ const QuizOverview = ({
               <QuizItem
                 key={item.title + i}
                 index={i}
-                order={i + 1}
                 title={item.title}
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                answer={item.choices[item.correct - 1]!.value}
+                answer={item.choices[item.correct]!}
                 handleDelete={handleDelete}
                 handleEdit={handleEdit}
               />
@@ -136,7 +137,9 @@ const QuizOverview = ({
               </>
             )}
           </button>
-          <button className={styles.defaultBtn}>Create</button>
+          <button className={styles.defaultBtn} onClick={handleSave}>
+            Create
+          </button>
         </div>
       </div>
     </div>
