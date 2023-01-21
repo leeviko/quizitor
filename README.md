@@ -11,10 +11,10 @@
 ## Features
 
 - [x] Authentication
-- [ ] Create quizzes
+- [x] Create quizzes
+  - [x] Public/private
   - [ ] Delete
   - [ ] Make favorite
-  - [ ] Public/private
 - [ ] View public quizzes
 - [ ] Search quizzes
 - [ ] Track quiz views

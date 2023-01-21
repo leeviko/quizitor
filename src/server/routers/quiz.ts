@@ -46,7 +46,7 @@ export const quizRouter = router({
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.user.id;
 
-      const quiz = prisma.quiz.create({
+      const quiz = await prisma.quiz.create({
         data: {
           title: input.title,
           private: input.private,
@@ -54,7 +54,6 @@ export const quizRouter = router({
           authorId: userId,
         },
       });
-      console.log(quiz);
 
       return { status: 200, result: quiz };
     }),

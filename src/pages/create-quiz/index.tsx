@@ -3,6 +3,9 @@ import ModalLayout from '~/layouts/ModalLayout';
 
 import QuizOverview from '~/components/QuizOverview';
 import NewQuestion from '~/components/NewQuestion';
+import { trpc } from '~/utils/trpc';
+import { useRouter } from 'next/router';
+import Loader from '~/components/Loader';
 
 export type TQuestion = {
   title: string;
@@ -20,14 +23,16 @@ export type TEditQuestion = TQuestion & {
 };
 
 const Overview = () => {
+  const router = useRouter();
   const [errors, setErrors] = useState<string[]>([]);
   const [mode, setMode] = useState<Mode>(Mode.Overview);
   const [edit, setEdit] = useState<TEditQuestion | null>(null);
   const [title, setTitle] = useState('');
   const [isPrivate, setIsPrivate] = useState(true);
   const [questions, setQuestions] = useState<Array<TQuestion>>([]);
+  const { mutateAsync, isLoading } = trpc.quiz.create.useMutation();
 
-  const handleSave = () => {
+  const handleSave = async () => {
     let errs: string[] = [];
     if (!title) {
       errs = [...errs, 'Title must be set'];
@@ -44,7 +49,17 @@ const Overview = () => {
       return;
     }
 
-    console.log(questions);
+    const result: any = await mutateAsync({
+      private: isPrivate,
+      title,
+      questions,
+    });
+
+    if (result.status === 200) {
+      return router.push('/');
+    } else {
+      setErrors(['Failed to save quiz']);
+    }
   };
 
   return (
@@ -58,27 +73,33 @@ const Overview = () => {
             : 'Add question',
       }}
     >
-      <div style={{ display: 'flex' }}>
-        <QuizOverview
-          setMode={setMode}
-          setTitle={setTitle}
-          setIsPrivate={setIsPrivate}
-          isPrivate={isPrivate}
-          title={title}
-          questions={questions}
-          setQuestions={setQuestions}
-          mode={mode}
-          setEdit={setEdit}
-          handleSave={handleSave}
-        />
-        <NewQuestion
-          setMode={setMode}
-          mode={mode}
-          questions={questions}
-          setQuestions={setQuestions}
-          edit={edit}
-          setEdit={setEdit}
-        />
+      <div style={{ display: 'flex', height: '100%' }}>
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <>
+            <QuizOverview
+              setMode={setMode}
+              setTitle={setTitle}
+              setIsPrivate={setIsPrivate}
+              isPrivate={isPrivate}
+              title={title}
+              questions={questions}
+              setQuestions={setQuestions}
+              mode={mode}
+              setEdit={setEdit}
+              handleSave={handleSave}
+            />
+            <NewQuestion
+              setMode={setMode}
+              mode={mode}
+              questions={questions}
+              setQuestions={setQuestions}
+              edit={edit}
+              setEdit={setEdit}
+            />
+          </>
+        )}
       </div>
     </ModalLayout>
   );
