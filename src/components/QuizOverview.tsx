@@ -32,7 +32,6 @@ const QuizOverview = ({
   };
 
   const handleEdit = (index: number) => {
-    console.log(questions[index]);
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     setEdit({ ...questions[index]!, index });
     setMode(Mode.New);

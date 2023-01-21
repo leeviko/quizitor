@@ -78,7 +78,6 @@ const NewQuestion = ({
     if (correct === -1) {
       errs = [...errs, 'You must choose which is the correct answer'];
     } else if (!choices[correct - 1]?.value) {
-      console.log(correct);
       errs = [...errs, 'Correct choice cannot be empty'];
     }
     if (errs.length > 0) {
@@ -106,7 +105,7 @@ const NewQuestion = ({
   };
 
   const handleModeChange = () => {
-    setErrors([]);
+    clearValues();
     setMode(Mode.Overview);
   };
 

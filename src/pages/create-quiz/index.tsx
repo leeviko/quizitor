@@ -34,7 +34,12 @@ const Overview = () => {
   return (
     <ModalLayout
       pageProps={{
-        title: mode === 'overview' ? 'Create new Quiz' : 'Add a Question',
+        title:
+          mode === 'overview'
+            ? 'Create new Quiz'
+            : edit
+            ? 'Edit question'
+            : 'Add question',
       }}
     >
       <div style={{ display: 'flex' }}>
