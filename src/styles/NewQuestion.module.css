@@ -25,18 +25,22 @@
   margin-bottom: 1rem;
 }
 
+.titleInput span {
+  font-size: 0.9rem;
+}
+
 .titleInput input {
   font-size: 1.25rem;
   border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  border-bottom: 3px solid rgba(0, 0, 0, 0.5);
   color: rgba(0, 0, 0, 0.8);
   font-weight: 600;
-  border-radius: 0.25rem;
   padding: 0.1rem;
   font-family: inherit;
 }
 
 .choices {
+  font-size: 0.9rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 150px 150px;
@@ -57,7 +61,8 @@
 }
 
 .choiceInputContainer {
-  background-color: var(--accent-0-5);
+  background-color: var(--accent);
+  border-radius: 0.25rem;
 }
 
 .choice input {

@@ -99,7 +99,7 @@ const QuizOverview = ({
         </div>
       )}
       <div className={styles.botActions}>
-        <div className={styles.leftActions}>
+        {/* <div className={styles.leftActions}>
           <button className={styles.discardBtn}>
             <Image
               src="/icons/delete.svg"
@@ -109,7 +109,7 @@ const QuizOverview = ({
             />
             <span>Discard</span>
           </button>
-        </div>
+        </div> */}
         <div className={styles.rightActions}>
           <button
             className={styles.privateBtn}
