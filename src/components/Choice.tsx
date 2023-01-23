@@ -37,7 +37,11 @@ const Choice = ({
   };
 
   return (
-    <div className={styles.choice}>
+    <div
+      className={`${styles.choice} ${
+        active === index ? styles.active : styles.unactive
+      } ${choices[index] ? styles.notEmpty : styles.empty}`}
+    >
       <div>
         <p className={styles.choiceTitle}>
           {index + 1}. choice

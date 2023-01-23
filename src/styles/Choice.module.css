@@ -10,12 +10,31 @@
   height: 100%;
 }
 
-.choiceInputContainer {
+.choice.active .choiceInputContainer {
   background-color: var(--accent);
+}
+
+.choice.unactive .choiceInputContainer {
+  background-color: var(--accent-0-2);
+}
+
+.choiceInputContainer {
+  z-index: 0;
+  transition: 0.15s;
   border-radius: 0.25rem;
+  border: 1px solid var(--accent);
+}
+
+.unactive.notEmpty .choiceInputContainer:hover {
+  background-color: var(--accent-0-5);
+}
+
+.choice.notEmpty .choiceInputContainer {
+  border-width: 2px;
 }
 
 .choice input {
+  z-index: 1;
   font-family: inherit;
   left: 50%;
   top: 50%;
