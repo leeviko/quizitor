@@ -6,7 +6,8 @@ export const Header = () => {
     <header className={styles.notLogged}>
       <div className={styles.wrapper}>
         <p className={styles.text}>
-          Create custom <span>quizzes</span> for faster <span>learning</span>
+          Browse and create <span>quizzes</span> for faster{' '}
+          <span>learning</span>
         </p>
         <div className={styles.actions}>
           <button className={`${styles.defaultBtn} ${styles.outline}`}>
