@@ -1,0 +1,47 @@
+.choiceTitle span {
+  color: var(--red);
+}
+
+.choice {
+  position: relative;
+}
+
+.choice div {
+  height: 100%;
+}
+
+.choiceInputContainer {
+  background-color: var(--accent);
+  border-radius: 0.25rem;
+}
+
+.choice input {
+  font-family: inherit;
+  left: 50%;
+  top: 50%;
+  position: relative;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  border: none;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+.correctContainer {
+  margin: 0.5rem;
+  border-radius: 50%;
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2px solid black;
+  background: none;
+}
+
+.correctContainer:hover {
+  cursor: pointer;
+}
+
+.correctContainer img {
+  margin: -2px 0 0 -2px;
+}

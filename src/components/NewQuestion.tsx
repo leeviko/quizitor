@@ -1,14 +1,9 @@
 import Image from 'next/image';
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-} from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Mode, TEditQuestion, TQuestion } from '~/pages/create-quiz';
 
 import styles from '../styles/NewQuestion.module.css';
+import Choice from './Choice';
 
 type Props = {
   setMode: Dispatch<SetStateAction<Mode>>;
@@ -31,13 +26,6 @@ const NewQuestion = ({
   const [title, setTitle] = useState('');
   const [correct, setCorrect] = useState<number>(-1);
   const [choices, setChoices] = useState<string[]>(['', '', '', '']);
-
-  const handleChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
-    const newArr = [...choices];
-    newArr[index] = e.target.value;
-
-    setChoices(newArr);
-  };
 
   useEffect(() => {
     if (edit) {
@@ -97,16 +85,6 @@ const NewQuestion = ({
     setMode(Mode.Overview);
   };
 
-  const handleSetCorrect = (index: number) => {
-    if (index === correct) {
-      setCorrect(-1);
-      return;
-    }
-    if (choices[index]) {
-      setCorrect(index);
-    }
-  };
-
   return (
     <div
       className={`${styles.content} ${
@@ -125,34 +103,15 @@ const NewQuestion = ({
 
       <div className={styles.choices}>
         {choices.map((item, i) => (
-          <div key={i} className={styles.choice}>
-            <div>
-              <p className={styles.choiceTitle}>
-                {i + 1}. choice
-                {i + 1 <= 2 && <span>*</span>}
-              </p>
-              <div className={styles.choiceInputContainer}>
-                <button
-                  className={styles.correctContainer}
-                  onClick={() => handleSetCorrect(i)}
-                >
-                  {correct === i && (
-                    <Image
-                      src="/icons/check.svg"
-                      alt="checkmark"
-                      width={24}
-                      height={24}
-                    />
-                  )}
-                </button>
-                <input
-                  value={item}
-                  onChange={(e) => handleChange(i, e)}
-                  type="text"
-                />
-              </div>
-            </div>
-          </div>
+          <Choice
+            key={i}
+            edit={true}
+            index={i}
+            choices={choices}
+            setChoices={setChoices}
+            active={correct}
+            setActive={setCorrect}
+          />
         ))}
 
         <div className={styles.actions}>
