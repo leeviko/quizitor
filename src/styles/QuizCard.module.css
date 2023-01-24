@@ -7,6 +7,14 @@
   border-radius: 0.25rem;
 }
 
+.card.skeleton {
+  background: none;
+}
+
+.card.skeleton:hover {
+  transform: none;
+}
+
 .card:hover {
   transform: translateY(-3px);
 }

@@ -1,4 +1,22 @@
+import Skeleton from 'react-loading-skeleton';
 import styles from '../styles/QuizCard.module.css';
+
+export const QuizCardSkeleton = () => {
+  return (
+    <div className={`${styles.card} ${styles.skeleton}`}>
+      <Skeleton
+        baseColor="var(--skeleton-bg)"
+        highlightColor="var(--skeleton-hg)"
+        height={75}
+      />
+      <Skeleton
+        baseColor="var(--skeleton-bg)"
+        highlightColor="var(--skeleton-hg)"
+        height={25}
+      />
+    </div>
+  );
+};
 
 const QuizCard = ({
   title,

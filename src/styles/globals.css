@@ -13,6 +13,9 @@
 
   --accent-hover: rgb(53, 182, 105);
 
+  --skeleton-bg: var(--accent);
+  --skeleton-hg: #9eecbd; /*  accent-0-5 */
+
   --blue: rgb(62, 65, 217);
 
   --light-blue: rgb(62, 180, 217);

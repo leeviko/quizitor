@@ -21,7 +21,7 @@ model Quiz {
   title     String      @db.VarChar(100)
   authorId  String
   private   Boolean     @default(true)
-  createdAt DateTime    @default(now())
+  createdAt DateTime    @unique @default(now())
   updatedAt DateTime    @updatedAt
   questions Questions[]
   author    User        @relation(fields: [authorId], references: [id])

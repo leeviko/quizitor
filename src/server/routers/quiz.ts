@@ -18,6 +18,12 @@ export const quizInputSchema = z.object({
     .max(50),
 });
 
+export const quizListSchema = z.object({
+  limit: z.number().max(20),
+  cursor: z.string().nullable(),
+  page: z.string(),
+});
+
 export const quizRouter = router({
   byId: publicProcedure
     .input(
@@ -57,4 +63,57 @@ export const quizRouter = router({
 
       return { status: 200, result: quiz };
     }),
+  quizzes: publicProcedure.input(quizListSchema).query(async ({ input }) => {
+    const { cursor, limit, page } = input;
+
+    let decodedCursor;
+    if (cursor) {
+      decodedCursor = Buffer.from(cursor, 'base64').toString('binary');
+    }
+
+    const queryResult = await prisma.quiz.findMany({
+      take: page === 'next' ? limit : -limit,
+      skip: 0,
+      cursor: decodedCursor
+        ? {
+            createdAt: decodedCursor,
+          }
+        : undefined,
+      orderBy: {
+        createdAt: 'asc',
+      },
+      where: {
+        private: false,
+      },
+      select: {
+        id: true,
+        title: true,
+        author: true,
+        questions: {
+          select: {
+            id: true,
+            title: true,
+            choices: true,
+          },
+        },
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    let nextCursor;
+    if (queryResult.length > 1) {
+      const lastQuiz = queryResult[queryResult.length - 1];
+      console.log(queryResult);
+      nextCursor = Buffer.from(JSON.stringify(lastQuiz?.createdAt)).toString(
+        'base64',
+      );
+    }
+
+    return {
+      status: 200,
+      result: queryResult,
+      cursor: { prev: cursor || null, next: nextCursor || null },
+    };
+  }),
 });
