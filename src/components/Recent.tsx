@@ -18,6 +18,7 @@ const Recent = () => {
           : result.data?.result.map((item) => (
               <QuizCard
                 key={item.id}
+                id={item.id}
                 authorName={item.author.name}
                 title={item.title}
                 questionCount={item.questions.length}
