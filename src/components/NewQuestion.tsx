@@ -2,8 +2,8 @@ import Image from 'next/image';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Mode, TEditQuestion, TQuestion } from '~/pages/create-quiz';
 
-import styles from '../styles/NewQuestion.module.css';
-import Choice from './Choice';
+import styles from '../styles/QuizPage.module.css';
+import { EditChoice } from './Choice';
 
 type Props = {
   setMode: Dispatch<SetStateAction<Mode>>;
@@ -103,9 +103,8 @@ const NewQuestion = ({
 
       <div className={styles.choices}>
         {choices.map((item, i) => (
-          <Choice
+          <EditChoice
             key={i}
-            edit={true}
             index={i}
             choices={choices}
             setChoices={setChoices}

@@ -35,6 +35,25 @@ export const quizRouter = router({
       const { id } = input;
       const quiz = await prisma.quiz.findUnique({
         where: { id },
+        select: {
+          id: true,
+          title: true,
+          private: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              createdAt: true,
+            },
+          },
+          questions: {
+            select: {
+              id: true,
+              title: true,
+              choices: true,
+            },
+          },
+        },
       });
       if (!quiz) {
         throw new TRPCError({

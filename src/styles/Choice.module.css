@@ -47,6 +47,13 @@
   border-radius: 0.25rem;
 }
 
+.choice .choiceText {
+  position: relative;
+  top: 50%;
+  transform: translate(0, -50%);
+  text-align: center;
+}
+
 .correctContainer {
   margin: 0.5rem;
   border-radius: 50%;

@@ -17,6 +17,11 @@
   visibility: hidden;
 }
 
+.questionTitle {
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
 .titleInput {
   display: flex;
   flex-direction: column;
@@ -97,4 +102,39 @@
 
 .errors ul {
   list-style: none;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.navigation button {
+  display: flex;
+  border: none;
+  background: none;
+  transition: 0.15s;
+}
+
+.navigation .enabled {
+  cursor: pointer;
+}
+
+.navigation button.disabled img {
+  opacity: 0.5;
+}
+
+.navigation .prev.enabled:hover {
+  translate: -5px;
+}
+
+.navigation .next {
+  transform: rotate(180deg);
+}
+
+.navigation .next.enabled:hover {
+  translate: 5px;
 }

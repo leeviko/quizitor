@@ -17,7 +17,7 @@ const ModalLayout = ({ children, pageProps }: DefaultLayoutProps) => {
           <div className={styles.blockBottom}></div>
         </div>
         <div className={styles.wrapper}>
-          <h2>{pageProps.title}</h2>
+          <h2 className={styles.pageTitle}>{pageProps.title}</h2>
           <div className={styles.modal}>{children}</div>
         </div>
         <div className={`${styles.right} ${styles.block}`}>
