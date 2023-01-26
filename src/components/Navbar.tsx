@@ -19,7 +19,7 @@ const Navbar = () => {
         )}
         {status === 'authenticated' && (
           <>
-            <Link href="/profile">Library</Link>
+            <Link href="/profile">Profile</Link>
             <Link href="#" onClick={() => signOut({ callbackUrl: '/' })}>
               Log out
             </Link>

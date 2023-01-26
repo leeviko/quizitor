@@ -1,13 +1,12 @@
-.container {
-  margin: 3rem 0;
-}
-
-.container h2 {
-  font-weight: 400;
+.content {
+  width: calc(100% - 150px);
+  margin-top: 1.5rem;
+  overflow-y: auto;
 }
 
 .items {
   display: grid;
+  justify-items: center;
   grid-gap: 0.5rem;
   grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
 }

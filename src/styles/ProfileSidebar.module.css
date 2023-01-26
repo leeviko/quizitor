@@ -1,0 +1,34 @@
+.sidebar {
+  width: fit-content;
+  height: 100%;
+  padding: 0.75rem;
+  border-right: 1px solid rgba(0, 0, 0, 0.5);
+  width: 150px;
+}
+
+.sectionTitle {
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 500;
+}
+
+.item {
+  transition: 0.15s;
+  margin: 0.25rem 0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+}
+
+.item.active {
+  background-color: var(--accent-0-8);
+}
+
+.item.unactive:hover {
+  background-color: var(--accent-0-5);
+}
+
+.item a {
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.8);
+}
