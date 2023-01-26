@@ -32,6 +32,12 @@
   font-size: 0.9rem;
 }
 
+.error {
+  font-size: 0.85rem;
+  color: var(--red);
+  margin: 0.25rem 0;
+}
+
 .submitBtn {
   transition: 0.15s;
   margin-top: 0.5rem;

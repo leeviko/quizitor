@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { ReactNode, useEffect } from 'react';
+import Loader from './Loader';
 
 export interface AuthEnabledComponentConfig {
   auth: boolean;
@@ -38,8 +39,7 @@ const Auth: any = ({
 
     return children;
   }
-
-  return <div>loading...</div>;
+  return <Loader fullscreen />;
 };
 
 export default Auth;

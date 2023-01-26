@@ -9,7 +9,7 @@ import { trpc } from '~/utils/trpc';
 import { useCallback, useEffect } from 'react';
 
 import styles from '~/styles/Auth.module.css';
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 
 const SignUp: NextPage = () => {
   const router = useRouter();
@@ -17,17 +17,24 @@ const SignUp: NextPage = () => {
   const { register, handleSubmit } = useForm<TSignUp>({
     resolver: zodResolver(userInputSchema),
   });
-  const { mutateAsync } = trpc.user.create.useMutation();
+  const { mutateAsync, error } = trpc.user.create.useMutation();
 
   const onSubmit = useCallback(
     async (data: TSignUp) => {
-      const result: any = await mutateAsync(data);
-
+      let result;
+      try {
+        result = await mutateAsync(data);
+      } catch (err) {
+        return;
+      }
       if (result.status === 201) {
-        router.push('/');
+        await signIn('credentials', {
+          ...data,
+          callbackUrl: '/',
+        });
       }
     },
-    [mutateAsync, router],
+    [mutateAsync],
   );
 
   useEffect(() => {
@@ -48,6 +55,7 @@ const SignUp: NextPage = () => {
             <input type="text" id="username" {...register('name')} />
             <label htmlFor="password">Password</label>
             <input type="password" id="password" {...register('password')} />
+            {error && <span className={styles.error}>{error.message}</span>}
             <button className={styles.submitBtn} type="submit">
               Sign Up
             </button>

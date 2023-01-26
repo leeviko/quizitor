@@ -20,7 +20,7 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user) {
-          return null;
+          throw new Error('Wrong username or password');
         }
 
         const valid = await bcrypt.compare(creds.password, user.password);
@@ -33,7 +33,7 @@ export const authOptions: NextAuthOptions = {
             createdAt: user.createdAt,
           };
         }
-        return null;
+        throw new Error('Wrong username or password');
       },
     }),
   ],

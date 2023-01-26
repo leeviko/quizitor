@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TLogin, TSignUp, userInputSchema } from '~/types/auth';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 
 import styles from '~/styles/Auth.module.css';
@@ -13,12 +13,16 @@ import styles from '~/styles/Auth.module.css';
 const Login: NextPage = () => {
   const router = useRouter();
   const { status } = useSession();
+  const [error, setError] = useState('');
   const { register, handleSubmit } = useForm<TSignUp>({
     resolver: zodResolver(userInputSchema),
   });
 
   const onSubmit = useCallback(async (data: TLogin) => {
-    await signIn('credentials', { ...data, callbackUrl: '/' });
+    const result = await signIn('credentials', { ...data, redirect: false });
+    if (result && !result.ok) {
+      result.error && setError(result.error);
+    }
   }, []);
 
   useEffect(() => {
@@ -39,6 +43,7 @@ const Login: NextPage = () => {
             <input type="text" id="username" {...register('name')} />
             <label htmlFor="password">Password</label>
             <input type="password" id="password" {...register('password')} />
+            {error && <span className={styles.error}>{error}</span>}
             <button className={styles.submitBtn} type="submit">
               Login
             </button>

@@ -38,7 +38,7 @@ const Overview = () => {
       errs = [...errs, 'Title must be set'];
     }
     if (questions.length === 0) {
-      errs = [...errs, 'There isnt any questions'];
+      errs = [...errs, 'There must be at least 1 question'];
     }
     if (questions.length > 50) {
       errs = [...errs, 'Too many questions. Max is 50'];
@@ -89,6 +89,7 @@ const Overview = () => {
               mode={mode}
               setEdit={setEdit}
               handleSave={handleSave}
+              errors={errors}
             />
             <NewQuestion
               setMode={setMode}

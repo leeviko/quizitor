@@ -14,7 +14,7 @@ const Recent = () => {
       <h2>Recent</h2>
       <div className={styles.items}>
         {result.isLoading
-          ? [...Array(6)].map((i) => <QuizCardSkeleton key={i} />)
+          ? [...Array(6)].map((_, i) => <QuizCardSkeleton key={i} />)
           : result.data?.result.map((item) => (
               <QuizCard
                 key={item.id}

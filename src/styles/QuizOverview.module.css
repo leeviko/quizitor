@@ -168,6 +168,24 @@
   bottom: 0;
 }
 
+.errorList {
+  font-size: 0.85rem;
+  position: absolute;
+  width: 250px;
+  bottom: -50%;
+  text-align: center;
+  list-style-type: none;
+  color: var(--red);
+}
+
+.errorList.bottom {
+  text-align: left;
+  position: relative;
+  margin: auto;
+  margin-right: 1.5rem;
+  width: auto;
+}
+
 .botActions {
   bottom: 0;
   left: 5rem;

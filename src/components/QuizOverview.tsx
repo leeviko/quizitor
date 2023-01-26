@@ -15,6 +15,7 @@ type Props = {
   mode: Mode;
   setEdit: Dispatch<SetStateAction<TEditQuestion | null>>;
   handleSave: () => void;
+  errors: string[];
 };
 
 const QuizOverview = ({
@@ -28,6 +29,7 @@ const QuizOverview = ({
   mode,
   setEdit,
   handleSave,
+  errors,
 }: Props) => {
   const handleDelete = (index: number) => {
     setQuestions(questions.filter((_item, i) => i !== index));
@@ -96,6 +98,13 @@ const QuizOverview = ({
           >
             Add a Question!
           </button>
+          {errors.length > 0 && (
+            <ul className={styles.errorList}>
+              {errors.map((val) => (
+                <li key={val}>- {val}</li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
       <div className={styles.botActions}>
@@ -111,6 +120,13 @@ const QuizOverview = ({
           </button>
         </div> */}
         <div className={styles.rightActions}>
+          {questions.length > 0 && errors.length > 0 && (
+            <ul className={`${styles.errorList} ${styles.bottom}`}>
+              {errors.map((val) => (
+                <li key={val}>- {val}</li>
+              ))}
+            </ul>
+          )}
           <button
             className={styles.privateBtn}
             onClick={() => setIsPrivate(!isPrivate)}
