@@ -6,7 +6,7 @@ import { trpc } from '~/utils/trpc';
 import styles from '../../styles/ProfileRecent.module.css';
 
 const ProfileRecent: NextPage = () => {
-  const result = trpc.quiz.quizzes.useQuery({
+  const result = trpc.quiz.recent.useQuery({
     limit: 10,
     cursor: null,
     page: 'next',

@@ -82,7 +82,7 @@ export const quizRouter = router({
 
       return { status: 200, result: quiz };
     }),
-  quizzes: publicProcedure.input(quizListSchema).query(async ({ input }) => {
+  recent: publicProcedure.input(quizListSchema).query(async ({ input }) => {
     const { cursor, limit, page } = input;
 
     let decodedCursor;

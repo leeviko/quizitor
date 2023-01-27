@@ -3,7 +3,7 @@ import styles from '../styles/Recent.module.css';
 import QuizCard, { QuizCardSkeleton } from './QuizCard';
 
 const Recent = () => {
-  const result = trpc.quiz.quizzes.useQuery({
+  const result = trpc.quiz.recent.useQuery({
     limit: 6,
     cursor: null,
     page: 'next',
