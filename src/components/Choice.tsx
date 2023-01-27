@@ -92,7 +92,6 @@ const Choice = ({ index, choices, active, setActive }: ChoiceProps) => {
         active === index ? styles.active : styles.unactive
       } ${choices[index] ? styles.notEmpty : styles.empty}`}
     >
-      <p className={styles.choiceTitle}>{index + 1}. choice</p>
       <div className={styles.choiceInputContainer}>
         <button
           className={styles.correctContainer}

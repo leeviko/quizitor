@@ -13,10 +13,10 @@ const ModalLayout = ({
 }: DefaultLayoutProps) => {
   return (
     <>
-      <div className={styles.top}></div>
+      {/* <div className={styles.top}></div> */}
       <div className={`${wide ? styles.wide : styles.default}`}>
         <div className={`${styles.left} ${styles.block}`}>
-          <div className={styles.blockTop}></div>
+          {/* <div className={styles.blockTop}></div> */}
           <div className={styles.blockBottom}></div>
         </div>
         <div className={styles.wrapper}>
@@ -24,7 +24,7 @@ const ModalLayout = ({
           <div className={styles.modal}>{children}</div>
         </div>
         <div className={`${styles.right} ${styles.block}`}>
-          <div className={styles.blockTop}></div>
+          {/* <div className={styles.blockTop}></div> */}
           <div className={styles.blockBottom}></div>
         </div>
       </div>

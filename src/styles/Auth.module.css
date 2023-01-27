@@ -16,7 +16,7 @@
 }
 
 .title {
-  color: black;
+  color: var(--text);
 }
 
 .form input {
@@ -28,6 +28,7 @@
 }
 
 .form label {
+  color: var(--text);
   margin-top: 0.25rem;
   font-size: 0.9rem;
 }
@@ -54,6 +55,12 @@
 .submitBtn:hover {
   cursor: pointer;
   background-color: var(--accent-hover);
+}
+
+.submitBtn:active {
+  transition: 0.05s;
+  outline: 2px solid var(--accent-hover);
+  outline-offset: 2px;
 }
 
 .form a {

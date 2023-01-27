@@ -5,16 +5,20 @@
 }
 
 :root {
-  --accent: rgb(62, 217, 124);
-  --accent-rgb: 62, 217, 124;
-  --accent-0-2: rgba(var(--accent-rgb), 0.2);
+  --accent: rgb(62, 152, 217);
+  --accent-rgb: 62, 152, 217;
+  --accent-0-25: rgba(var(--accent-rgb), 0.25);
   --accent-0-5: rgba(var(--accent-rgb), 0.5);
   --accent-0-8: rgba(var(--accent-rgb), 0.8);
 
-  --accent-hover: rgb(53, 182, 105);
+  --accent-hover: rgb(55, 136, 193);
+
+  --bg: #24272a;
+
+  --text: rgba(255, 255, 255, 0.8);
 
   --skeleton-bg: var(--accent);
-  --skeleton-hg: #9eecbd; /*  accent-0-5 */
+  --skeleton-hg: #9ecdec; /*  accent-0-5 */
 
   --blue: rgb(62, 65, 217);
 
@@ -22,10 +26,13 @@
   --light-blue-rgb: 62, 180, 217;
   --light-blue-0-5: rgba(var(--light-blue-rgb), 0.5);
 
-  --red: #d93e3e;
-  --red-rgb: 217, 62, 62;
+  --red: rgb(212, 43, 43);
+  --red-rgb: 212, 43, 43;
   --red-0-5: rgba(var(--red-rgb), 0.5);
   --red-0-2: rgba(var(--red-rgb), 0.2);
+
+  --white-filter: invert(94%) sepia(100%) saturate(0%) hue-rotate(265deg)
+    brightness(104%) contrast(103%);
 
   --pad: 3rem;
   --modal-pad: 2rem 5rem;
@@ -33,6 +40,7 @@
 
 body {
   overflow-x: hidden;
+  background-color: var(--bg);
 }
 
 main {
