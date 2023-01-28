@@ -3,6 +3,23 @@ import { TRPCError } from '@trpc/server';
 import { boolean, z } from 'zod';
 import { prisma } from '~/server/prisma';
 
+export type TQuizResult = {
+  title: string;
+  id: string;
+  private: boolean;
+  questions: {
+    title: string;
+    choices: string[];
+    id: string;
+  }[];
+  author: {
+    id: string;
+    name: string;
+    createdAt: Date;
+  };
+  favorited?: boolean | null;
+} | null;
+
 export const quizInputSchema = z.object({
   title: z.string(),
   private: boolean(),
@@ -31,9 +48,14 @@ export const quizRouter = router({
         id: z.string(),
       }),
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
+      let userId = null;
+      if (ctx.session) {
+        userId = ctx.session.user.id;
+      }
+
       const { id } = input;
-      const quiz = await prisma.quiz.findUnique({
+      const quiz: TQuizResult = await prisma.quiz.findUnique({
         where: { id },
         select: {
           id: true,
@@ -61,9 +83,57 @@ export const quizRouter = router({
           message: 'Quiz does not exist',
         });
       }
+
+      if (!userId) {
+        return {
+          status: 200,
+          result: { ...quiz, favorited: false },
+        };
+      }
+
+      // -----------------
+      // UPDATE VIEW COUNT
+      // -----------------
+
+      const interactions = await prisma.interactions.findFirst({
+        where: { quizId: quiz.id, userId },
+        select: { id: true, viewed: true, viewedAt: true, favorited: true },
+      });
+
+      let timeBetweenViewed;
+      if (interactions?.viewedAt) {
+        timeBetweenViewed = Date.now() - interactions.viewedAt.getTime();
+      }
+
+      if (!interactions) {
+        await prisma.interactions.create({
+          data: {
+            userId,
+            quizId: quiz.id,
+            viewed: 1,
+            viewedAt: new Date(),
+          },
+        });
+
+        return {
+          status: 200,
+          result: { ...quiz, favorited: false },
+        };
+      }
+
+      if (timeBetweenViewed && timeBetweenViewed > 5000) {
+        let viewCount = interactions.viewed;
+        viewCount++;
+
+        await prisma.interactions.update({
+          where: { id: interactions.id },
+          data: { viewed: viewCount++, viewedAt: new Date() },
+        });
+      }
+
       return {
         status: 200,
-        result: quiz,
+        result: { ...quiz, favorited: interactions.favorited },
       };
     }),
   create: protectedProcedure
@@ -123,7 +193,6 @@ export const quizRouter = router({
     let nextCursor;
     if (queryResult.length > 1) {
       const lastQuiz = queryResult[queryResult.length - 1];
-      console.log(queryResult);
       nextCursor = Buffer.from(JSON.stringify(lastQuiz?.createdAt)).toString(
         'base64',
       );

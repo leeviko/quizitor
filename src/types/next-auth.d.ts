@@ -13,7 +13,7 @@ declare module 'next-auth' {
       id: string;
       name: string;
       role: 'USER' | 'ADMIN';
-      createdAt: string;
+      createdAt: Date;
     };
   }
 }
@@ -23,6 +23,6 @@ declare module 'next-auth/jwt' {
     id: string;
     name: string;
     role: 'USER' | 'ADMIN';
-    sub: string;
+    createdAt: Date;
   }
 }

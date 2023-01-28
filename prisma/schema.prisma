@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
 }
 
 datasource db {
@@ -8,32 +8,45 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String   @unique @db.VarChar(55)
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  quizzes   Quiz[]
+  id            String      @id @default(uuid())
+  name          String      @unique @db.VarChar(55)
+  password      String
+  role          Role        @default(USER)
+  createdAt     DateTime    @default(now())
+  quizzes       Quiz[]
+  interactions  Interactions[]
 }
 
 model Quiz {
-  id        String      @id @default(uuid())
-  title     String      @db.VarChar(100)
-  authorId  String
-  private   Boolean     @default(true)
-  createdAt DateTime    @unique @default(now())
-  updatedAt DateTime    @updatedAt
-  questions Questions[]
-  author    User        @relation(fields: [authorId], references: [id])
+  id            String      @id @default(uuid())
+  title         String      @db.VarChar(100)
+  authorId      String
+  private       Boolean     @default(true)
+  createdAt     DateTime    @unique @default(now())
+  updatedAt     DateTime    @updatedAt
+  questions     Questions[]
+  author        User        @relation(fields: [authorId], references: [id])
+  interactions  Interactions[]
 }
 
 model Questions {
-  id        String      @id @default(uuid())
-  title     String      @db.VarChar(100)
-  quizId    String
-  quiz      Quiz        @relation(fields: [quizId], references: [id])
-  correct   Int
-  choices   String[]
+  id            String      @id @default(uuid())
+  title         String      @db.VarChar(100)
+  quizId        String
+  quiz          Quiz        @relation(fields: [quizId], references: [id])
+  correct       Int
+  choices       String[]
+}
+
+model Interactions {
+  id            String      @id @default(uuid())
+  userId        String      
+  user          User        @relation(fields: [userId], references: [id])
+  quizId        String      
+  quiz          Quiz        @relation(fields: [quizId], references: [id])
+  favorited     Boolean     @default(false)
+  viewed        Int         @default(0)
+  viewedAt      DateTime?    
 }
 
 enum Role {
