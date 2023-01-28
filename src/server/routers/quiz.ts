@@ -1,45 +1,27 @@
 import { router, publicProcedure, protectedProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
-import { boolean, z } from 'zod';
 import { prisma } from '~/server/prisma';
+import { z } from 'zod';
+import {
+  TQuizResult,
+  quizInputSchema,
+  cursorSchema,
+  offsetSchema,
+} from '~/types/quiz';
 
-export type TQuizResult = {
-  title: string;
-  id: string;
-  private: boolean;
-  questions: {
-    title: string;
-    choices: string[];
-    id: string;
-  }[];
+const defaultQuizSelect = {
+  id: true,
+  title: true,
   author: {
-    id: string;
-    name: string;
-    createdAt: Date;
-  };
-  favorited?: boolean | null;
-} | null;
-
-export const quizInputSchema = z.object({
-  title: z.string(),
-  private: boolean(),
-  questions: z
-    .array(
-      z.object({
-        title: z.string(),
-        correct: z.number(),
-        choices: z.array(z.string()).min(2).max(4),
-      }),
-    )
-    .min(1)
-    .max(50),
-});
-
-export const quizListSchema = z.object({
-  limit: z.number().max(20),
-  cursor: z.string().nullable(),
-  page: z.string(),
-});
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  _count: { select: { questions: true } },
+  createdAt: true,
+  updatedAt: true,
+};
 
 export const quizRouter = router({
   byId: publicProcedure
@@ -84,7 +66,7 @@ export const quizRouter = router({
         });
       }
 
-      if (!userId) {
+      if (!userId || quiz.private) {
         return {
           status: 200,
           result: { ...quiz, favorited: false },
@@ -152,7 +134,7 @@ export const quizRouter = router({
 
       return { status: 200, result: quiz };
     }),
-  recent: publicProcedure.input(quizListSchema).query(async ({ input }) => {
+  recent: publicProcedure.input(cursorSchema).query(async ({ input }) => {
     const { cursor, limit, page } = input;
 
     let decodedCursor;
@@ -169,25 +151,12 @@ export const quizRouter = router({
           }
         : undefined,
       orderBy: {
-        createdAt: 'asc',
+        createdAt: 'desc',
       },
       where: {
         private: false,
       },
-      select: {
-        id: true,
-        title: true,
-        author: true,
-        questions: {
-          select: {
-            id: true,
-            title: true,
-            choices: true,
-          },
-        },
-        createdAt: true,
-        updatedAt: true,
-      },
+      select: defaultQuizSelect,
     });
 
     let nextCursor;
@@ -203,5 +172,59 @@ export const quizRouter = router({
       result: queryResult,
       cursor: { prev: cursor || null, next: nextCursor || null },
     };
+  }),
+  quizList: publicProcedure.input(offsetSchema).query(async ({ input }) => {
+    const { skip, limit, sortBy } = input;
+
+    const statsResult = await prisma.interactions.groupBy({
+      skip,
+      take: limit,
+      orderBy: { quizId: 'desc' },
+      by: ['quizId'],
+      where: sortBy === 'favorites' ? { favorited: true } : undefined,
+      _sum: {
+        viewed: true,
+      },
+      _count: {
+        favorited: true,
+      },
+    });
+
+    const result = await prisma.quiz.findMany({
+      where: { id: { in: statsResult.map(({ quizId }) => quizId) } },
+      select: defaultQuizSelect,
+    });
+
+    // Combine stats with quiz
+    let quizzes = result.map((quiz) => ({
+      ...quiz,
+      ...statsResult.find((stats) => stats.quizId === quiz.id),
+    }));
+
+    const srtByViews = (a: any, b: any) => {
+      return b._sum.viewed - a._sum.viewed;
+    };
+    const srtByFavs = (a: any, b: any) => {
+      return b._count.favorited - a._count.favorited;
+    };
+
+    if (sortBy === 'views') {
+      quizzes.sort(srtByViews);
+    } else if (sortBy === 'favorites') {
+      quizzes.sort(srtByFavs);
+    }
+
+    if (quizzes.length < limit) {
+      const fillQuizzes = await prisma.quiz.findMany({
+        take: limit - quizzes.length,
+        where: { id: { notIn: statsResult.map(({ quizId }) => quizId) } },
+        select: defaultQuizSelect,
+        orderBy: { createdAt: 'desc' },
+      });
+
+      quizzes = [...quizzes, ...fillQuizzes];
+    }
+
+    return { result: quizzes };
   }),
 });

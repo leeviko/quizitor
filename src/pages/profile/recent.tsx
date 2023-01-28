@@ -24,7 +24,7 @@ const ProfileRecent: NextPage = () => {
                   id={item.id}
                   authorName={item.author.name}
                   title={item.title}
-                  questionCount={item.questions.length}
+                  questionCount={item._count.questions}
                 />
               ))}
         </div>

@@ -11,13 +11,13 @@
 ## Features
 
 - [x] Authentication
+- [x] Track quiz views
+- [x] View public quizzes
 - [x] Create quizzes
   - [x] Public/private
   - [ ] Delete
   - [ ] Make favorite
-- [ ] View public quizzes
 - [ ] Search quizzes
-- [ ] Track quiz views
 - [ ] ...
 
 ## Database diagram

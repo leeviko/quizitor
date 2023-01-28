@@ -1,27 +1,20 @@
-import { trpc } from '~/utils/trpc';
-import styles from '../styles/Recent.module.css';
+import styles from '../styles/HomeFeed.module.css';
 import QuizCard, { QuizCardSkeleton } from './QuizCard';
 
-const Recent = () => {
-  const result = trpc.quiz.recent.useQuery({
-    limit: 6,
-    cursor: null,
-    page: 'next',
-  });
-
+const HomeFeed = ({ result, title }: { result: any; title: string }) => {
   return (
     <section className={styles.container}>
-      <h2>Recent</h2>
+      <h2>{title}</h2>
       <div className={styles.items}>
         {result.isLoading
           ? [...Array(6)].map((_, i) => <QuizCardSkeleton key={i} />)
-          : result.data?.result.map((item) => (
+          : result.data?.result.map((item: any) => (
               <QuizCard
                 key={item.id}
                 id={item.id}
                 authorName={item.author.name}
                 title={item.title}
-                questionCount={item.questions.length}
+                questionCount={item._count.questions}
               />
             ))}
       </div>
@@ -29,4 +22,4 @@ const Recent = () => {
   );
 };
 
-export default Recent;
+export default HomeFeed;
