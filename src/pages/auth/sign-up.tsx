@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TSignUp, userInputSchema } from '~/types/auth';
+import { TSignUp, userInputSchema } from '~/types/user';
 import { trpc } from '~/utils/trpc';
 import { useCallback, useEffect } from 'react';
 

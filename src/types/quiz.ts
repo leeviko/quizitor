@@ -32,14 +32,18 @@ export const quizInputSchema = z.object({
     .max(50),
 });
 
+export type TQuizInput = z.infer<typeof quizInputSchema>;
+
 export const offsetSchema = z.object({
   skip: z.number().default(0),
   limit: z.number().max(20).default(10),
   sortBy: z.string(),
 });
+export type TOffsetInput = z.infer<typeof offsetSchema>;
 
 export const cursorSchema = z.object({
   limit: z.number().max(20),
   cursor: z.string().nullable(),
   page: z.string(),
 });
+export type TCursorInput = z.infer<typeof cursorSchema>;

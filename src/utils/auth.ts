@@ -2,7 +2,7 @@ import { prisma } from '~/server/prisma';
 import { NextAuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
-import { userInputSchema } from '~/types/auth';
+import { userInputSchema } from '~/types/user';
 
 export const authOptions: NextAuthOptions = {
   providers: [
