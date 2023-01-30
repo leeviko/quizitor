@@ -15,6 +15,7 @@ const HomeFeed = ({ result, title }: { result: any; title: string }) => {
                 authorName={item.author.name}
                 title={item.title}
                 questionCount={item._count.questions}
+                favorited={item.interactions && item.interactions[0]?.favorited}
               />
             ))}
       </div>

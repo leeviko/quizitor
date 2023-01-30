@@ -14,6 +14,7 @@ import { signIn, useSession } from 'next-auth/react';
 const SignUp: NextPage = () => {
   const router = useRouter();
   const { status } = useSession();
+  const utils = trpc.useContext();
   const { register, handleSubmit } = useForm<TSignUp>({
     resolver: zodResolver(userInputSchema),
   });
@@ -28,12 +29,14 @@ const SignUp: NextPage = () => {
         return;
       }
       if (result.status === 201) {
+        utils.quiz.invalidate();
         await signIn('credentials', {
           ...data,
           callbackUrl: '/',
         });
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [mutateAsync],
   );
 

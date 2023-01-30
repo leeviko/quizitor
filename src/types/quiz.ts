@@ -31,8 +31,11 @@ export const quizInputSchema = z.object({
     .min(1)
     .max(50),
 });
-
 export type TQuizInput = z.infer<typeof quizInputSchema>;
+
+export const favoriteInputSchema = z.object({
+  id: z.string(),
+});
 
 export const offsetSchema = z.object({
   skip: z.number().default(0),

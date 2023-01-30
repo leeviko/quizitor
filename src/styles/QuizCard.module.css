@@ -32,7 +32,6 @@
   word-break: break-all;
 }
 
-.tag,
 .authorName {
   font-size: 0.8rem;
 }
@@ -49,4 +48,14 @@
   position: absolute;
   margin: 0.5rem 0;
   bottom: 0;
+}
+
+.favorite {
+  margin-left: 0.25rem;
+}
+
+.favorite img {
+  vertical-align: middle;
+  filter: var(--white-filter);
+  opacity: 0.8;
 }

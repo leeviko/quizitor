@@ -130,10 +130,65 @@ export async function createQuiz(data: TQuizInput, userId: string) {
 }
 
 // ----------------
+// Create quiz
+// ----------------
+export async function favoriteQuiz(quizId: string, userId: string) {
+  const exists = await prisma.interactions.findFirst({
+    where: {
+      AND: [
+        {
+          quizId,
+        },
+        {
+          userId,
+        },
+      ],
+    },
+    select: {
+      id: true,
+      favorited: true,
+    },
+  });
+
+  const updateInteractions = await prisma.interactions.upsert({
+    where: { id: exists?.id ?? '0' },
+    create: {
+      quizId,
+      userId,
+      favorited: true,
+    },
+    update: {
+      favorited: !exists?.favorited ?? true,
+    },
+  });
+
+  return { favorited: updateInteractions.favorited };
+}
+
+// ----------------
 // Get recent quizzes
 // ----------------
-export async function getRecentQuizzes(data: TCursorInput) {
+export async function getRecentQuizzes(
+  data: TCursorInput,
+  session: Session | null,
+) {
   const { cursor, limit, page } = data;
+  let userId = null;
+  let quizSelect: any = defaultQuizSelect;
+  if (session) {
+    userId = session.user.id;
+    quizSelect = {
+      ...defaultQuizSelect,
+      interactions: userId
+        ? {
+            where: { userId },
+            select: {
+              favorited: true,
+            },
+          }
+        : undefined,
+    };
+  }
 
   let decodedCursor;
   if (cursor) {
@@ -154,7 +209,7 @@ export async function getRecentQuizzes(data: TCursorInput) {
     where: {
       private: false,
     },
-    select: defaultQuizSelect,
+    select: quizSelect,
   });
 
   let nextCursor;
@@ -172,8 +227,24 @@ export async function getRecentQuizzes(data: TCursorInput) {
   };
 }
 
-export async function getQuizList(data: TOffsetInput) {
+export async function getQuizList(data: TOffsetInput, session: Session | null) {
   const { skip, limit, sortBy } = data;
+  let userId = null;
+  let quizSelect: any = defaultQuizSelect;
+  if (session) {
+    userId = session.user.id;
+    quizSelect = {
+      ...defaultQuizSelect,
+      interactions: userId
+        ? {
+            where: { userId },
+            select: {
+              favorited: true,
+            },
+          }
+        : undefined,
+    };
+  }
 
   const statsResult = await prisma.interactions.groupBy({
     skip,
@@ -191,7 +262,7 @@ export async function getQuizList(data: TOffsetInput) {
 
   const result = await prisma.quiz.findMany({
     where: { id: { in: statsResult.map(({ quizId }) => quizId) } },
-    select: defaultQuizSelect,
+    select: quizSelect,
   });
 
   // Combine stats with quiz
@@ -217,7 +288,7 @@ export async function getQuizList(data: TOffsetInput) {
     const fillQuizzes = await prisma.quiz.findMany({
       take: limit - quizzes.length,
       where: { id: { notIn: statsResult.map(({ quizId }) => quizId) } },
-      select: defaultQuizSelect,
+      select: quizSelect,
       orderBy: { createdAt: 'desc' },
     });
 

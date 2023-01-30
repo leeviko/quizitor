@@ -1,11 +1,17 @@
 import { router, publicProcedure, protectedProcedure } from '../trpc';
 import { z } from 'zod';
-import { quizInputSchema, cursorSchema, offsetSchema } from '~/types/quiz';
+import {
+  quizInputSchema,
+  cursorSchema,
+  offsetSchema,
+  favoriteInputSchema,
+} from '~/types/quiz';
 import {
   createQuiz,
   getQuizById,
   getQuizList,
   getRecentQuizzes,
+  favoriteQuiz,
 } from '../functions/quiz';
 
 export const quizRouter = router({
@@ -25,11 +31,19 @@ export const quizRouter = router({
       return createQuiz(input, ctx.user.id);
     }),
 
-  recent: publicProcedure.input(cursorSchema).query(async ({ input }) => {
-    return getRecentQuizzes(input);
+  favorite: protectedProcedure
+    .input(favoriteInputSchema)
+    .mutation(async ({ input, ctx }) => {
+      return favoriteQuiz(input.id, ctx.user.id);
+    }),
+
+  recent: publicProcedure.input(cursorSchema).query(async ({ input, ctx }) => {
+    return getRecentQuizzes(input, ctx.session);
   }),
 
-  quizList: publicProcedure.input(offsetSchema).query(async ({ input }) => {
-    return getQuizList(input);
-  }),
+  quizList: publicProcedure
+    .input(offsetSchema)
+    .query(async ({ input, ctx }) => {
+      return getQuizList(input, ctx.session);
+    }),
 });

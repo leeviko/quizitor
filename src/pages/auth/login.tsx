@@ -9,10 +9,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 
 import styles from '~/styles/Auth.module.css';
+import { trpc } from '~/utils/trpc';
 
 const Login: NextPage = () => {
   const router = useRouter();
   const { status } = useSession();
+  const utils = trpc.useContext();
   const [error, setError] = useState('');
   const { register, handleSubmit } = useForm<TSignUp>({
     resolver: zodResolver(userInputSchema),
@@ -20,9 +22,13 @@ const Login: NextPage = () => {
 
   const onSubmit = useCallback(async (data: TLogin) => {
     const result = await signIn('credentials', { ...data, redirect: false });
-    if (result && !result.ok) {
-      result.error && setError(result.error);
+    if (result?.ok) {
+      utils.quiz.invalidate();
+      router.push('/');
+    } else {
+      setError(result?.error || 'Something went wrong');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
