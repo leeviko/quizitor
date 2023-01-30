@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint --ext \".js,.ts,.tsx\" --report-unused-disable-directives --report-unused-disable-directives src",
     "migrate-dev": "dotenv -e .env.local -- prisma migrate dev",
+    "db-push": "dotenv -e .env.local -- prisma db push",
     "migrate": "prisma migrate deploy",
     "postinstall": "prisma generate"
   },
