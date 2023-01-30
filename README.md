@@ -18,6 +18,7 @@
   - [x] Make favorite
   - [ ] Delete
 - [ ] Search quizzes
+- [ ] Save quiz score
 - [ ] ...
 
 ## Database diagram
