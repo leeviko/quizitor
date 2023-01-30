@@ -13,6 +13,7 @@ import {
   getRecentQuizzes,
   favoriteQuiz,
   getFavoriteQuizzes,
+  getUserRecent,
 } from '../functions/quiz';
 
 export const quizRouter = router({
@@ -41,6 +42,12 @@ export const quizRouter = router({
   recent: publicProcedure.input(cursorSchema).query(async ({ input, ctx }) => {
     return getRecentQuizzes(input, ctx.session);
   }),
+
+  userRecent: protectedProcedure
+    .input(offsetSchema)
+    .query(async ({ input, ctx }) => {
+      return getUserRecent(input, ctx.user.id);
+    }),
 
   quizList: publicProcedure
     .input(offsetSchema)

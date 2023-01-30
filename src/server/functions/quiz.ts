@@ -312,3 +312,34 @@ export async function getFavoriteQuizzes(data: TOffsetInput, userId: string) {
     result,
   };
 }
+
+// ----------------
+// Get user recent
+// ----------------
+export async function getUserRecent(data: TOffsetInput, userId: string) {
+  const { skip, limit } = data;
+
+  const result = await prisma.interactions.findMany({
+    skip,
+    take: limit,
+    where: {
+      AND: [
+        { userId },
+        { viewedAt: { not: undefined || null } },
+        { quiz: { private: false } },
+      ],
+    },
+    select: {
+      id: true,
+      quiz: { select: defaultQuizSelect },
+      favorited: true,
+      viewedAt: true,
+    },
+    orderBy: { viewedAt: 'desc' },
+  });
+
+  return {
+    status: 200,
+    result,
+  };
+}

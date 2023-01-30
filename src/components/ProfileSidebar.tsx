@@ -20,7 +20,7 @@ const ProfileSidebar = () => {
           path === '/profile/recent' ? styles.active : styles.unactive
         }`}
       >
-        <Link href="/profile/recent">Recent</Link>
+        <Link href="/profile/recent">Recently viewed</Link>
       </div>
       <div
         className={`${styles.item} ${

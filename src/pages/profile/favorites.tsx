@@ -1,11 +1,10 @@
-import { NextPage } from 'next';
 import QuizCard, { QuizCardSkeleton } from '~/components/QuizCard';
 import ProfileLayout from '~/layouts/ProfileLayout';
 import { trpc } from '~/utils/trpc';
 
 import styles from '../../styles/ProfileCards.module.css';
 
-const ProfileRecent: NextPage = () => {
+const ProfileFavorites = () => {
   const result = trpc.quiz.favorites.useQuery({
     limit: 10,
     skip: 0,
@@ -34,4 +33,6 @@ const ProfileRecent: NextPage = () => {
   );
 };
 
-export default ProfileRecent;
+ProfileFavorites.auth = { role: 'USER' };
+
+export default ProfileFavorites;
