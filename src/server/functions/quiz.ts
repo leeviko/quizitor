@@ -1,26 +1,13 @@
 import { prisma } from '~/server/prisma';
 import { TRPCError } from '@trpc/server';
 import {
+  defaultQuizSelect,
   TCursorInput,
   TOffsetInput,
   TQuizInput,
   TQuizResult,
 } from '~/types/quiz';
 import { Session } from 'next-auth';
-
-const defaultQuizSelect = {
-  id: true,
-  title: true,
-  author: {
-    select: {
-      id: true,
-      name: true,
-    },
-  },
-  _count: { select: { questions: true } },
-  createdAt: true,
-  updatedAt: true,
-};
 
 // ----------------
 // Get quiz by id
@@ -174,19 +161,17 @@ export async function getRecentQuizzes(
 ) {
   const { cursor, limit, page } = data;
   let userId = null;
-  let quizSelect: any = defaultQuizSelect;
+  let quizSelectWithInteractions;
   if (session) {
     userId = session.user.id;
-    quizSelect = {
+    quizSelectWithInteractions = {
       ...defaultQuizSelect,
-      interactions: userId
-        ? {
-            where: { userId },
-            select: {
-              favorited: true,
-            },
-          }
-        : undefined,
+      interactions: {
+        where: { userId },
+        select: {
+          favorited: true,
+        },
+      },
     };
   }
 
@@ -209,7 +194,7 @@ export async function getRecentQuizzes(
     where: {
       private: false,
     },
-    select: quizSelect,
+    select: quizSelectWithInteractions ?? defaultQuizSelect,
   });
 
   let nextCursor;
@@ -227,6 +212,10 @@ export async function getRecentQuizzes(
   };
 }
 
+// ----------------
+// Get quiz list
+// sorted by views or num of favorites
+// ----------------
 export async function getQuizList(data: TOffsetInput, session: Session | null) {
   const { skip, limit, sortBy } = data;
   let userId = null;
@@ -295,5 +284,31 @@ export async function getQuizList(data: TOffsetInput, session: Session | null) {
     quizzes = [...quizzes, ...fillQuizzes];
   }
 
-  return { result: quizzes };
+  return { status: 200, result: quizzes };
+}
+
+// ----------------
+// Get favorited quizzes
+// ----------------
+export async function getFavoriteQuizzes(data: TOffsetInput, userId: string) {
+  const { skip, limit } = data;
+
+  const result = await prisma.interactions.findMany({
+    skip,
+    take: limit,
+    where: {
+      AND: [{ userId }, { favorited: true }, { quiz: { private: false } }],
+    },
+    select: {
+      id: true,
+      quiz: { select: defaultQuizSelect },
+      favorited: true,
+    },
+    orderBy: { quiz: { createdAt: 'desc' } },
+  });
+
+  return {
+    status: 200,
+    result,
+  };
 }

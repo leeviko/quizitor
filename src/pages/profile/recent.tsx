@@ -3,7 +3,7 @@ import QuizCard, { QuizCardSkeleton } from '~/components/QuizCard';
 import ProfileLayout from '~/layouts/ProfileLayout';
 import { trpc } from '~/utils/trpc';
 
-import styles from '../../styles/ProfileRecent.module.css';
+import styles from '../../styles/ProfileCards.module.css';
 
 const ProfileRecent: NextPage = () => {
   const result = trpc.quiz.recent.useQuery({

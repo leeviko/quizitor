@@ -12,6 +12,7 @@ import {
   getQuizList,
   getRecentQuizzes,
   favoriteQuiz,
+  getFavoriteQuizzes,
 } from '../functions/quiz';
 
 export const quizRouter = router({
@@ -45,5 +46,11 @@ export const quizRouter = router({
     .input(offsetSchema)
     .query(async ({ input, ctx }) => {
       return getQuizList(input, ctx.session);
+    }),
+
+  favorites: protectedProcedure
+    .input(offsetSchema)
+    .query(async ({ input, ctx }) => {
+      return getFavoriteQuizzes(input, ctx.user.id);
     }),
 });

@@ -50,3 +50,31 @@ export const cursorSchema = z.object({
   page: z.string(),
 });
 export type TCursorInput = z.infer<typeof cursorSchema>;
+
+export const defaultQuizSelect = {
+  id: true,
+  title: true,
+  author: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  _count: { select: { questions: true } },
+  createdAt: true,
+  updatedAt: true,
+};
+
+export type TQuizSelect = {
+  id: string;
+  title: string;
+  author: {
+    id: string;
+    name: string;
+  };
+  _count: {
+    questions: number;
+  };
+  createdAt: Date;
+  updatedAt: Date;
+};
