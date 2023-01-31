@@ -1,6 +1,6 @@
 # Quizitor
 
-> Create and browse flashcards to study and learn faster
+> Create, browse and do quizzes
 
 ## Stack
 
@@ -11,12 +11,13 @@
 ## Features
 
 - [x] Authentication
-- [x] Track quiz views
 - [x] View public quizzes
+- [x] Track quiz views
 - [x] Create quizzes
   - [x] Public/private
   - [x] Make favorite
   - [ ] Delete
+  - [ ] Edit
 - [ ] Search quizzes
 - [ ] Save quiz score
 - [ ] ...
