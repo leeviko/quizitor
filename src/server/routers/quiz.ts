@@ -30,13 +30,13 @@ export const quizRouter = router({
   create: protectedProcedure
     .input(quizInputSchema)
     .mutation(async ({ input, ctx }) => {
-      return createQuiz(input, ctx.user.id);
+      return createQuiz(input, ctx.session.user.id);
     }),
 
   favorite: protectedProcedure
     .input(favoriteInputSchema)
     .mutation(async ({ input, ctx }) => {
-      return favoriteQuiz(input.id, ctx.user.id);
+      return favoriteQuiz(input.id, ctx.session.user.id);
     }),
 
   recent: publicProcedure.input(cursorSchema).query(async ({ input, ctx }) => {
@@ -46,7 +46,7 @@ export const quizRouter = router({
   userRecent: protectedProcedure
     .input(offsetSchema)
     .query(async ({ input, ctx }) => {
-      return getUserRecent(input, ctx.user.id);
+      return getUserRecent(input, ctx.session.user.id);
     }),
 
   quizList: publicProcedure
@@ -58,6 +58,6 @@ export const quizRouter = router({
   favorites: protectedProcedure
     .input(offsetSchema)
     .query(async ({ input, ctx }) => {
-      return getFavoriteQuizzes(input, ctx.user.id);
+      return getFavoriteQuizzes(input, ctx.session.user.id);
     }),
 });
