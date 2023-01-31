@@ -12,7 +12,8 @@ function getBaseUrl() {
   }
 
   if (process.env.NODE_ENV === 'production') {
-    return `https://${process.env.APP_URL}`;
+    return `http://127.0.0.1:${process.env.PORT ?? 3000}`;
+    // return `https://${process.env.APP_URL}`;
   }
 
   return `http://127.0.0.1:${process.env.PORT ?? 3000}`;

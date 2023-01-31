@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "build": "next build",
     "build-postgres": "migrate && next build",
     "start": "next start",
     "lint": "eslint --ext \".js,.ts,.tsx\" --report-unused-disable-directives --report-unused-disable-directives src",
