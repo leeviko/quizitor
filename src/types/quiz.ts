@@ -1,22 +1,5 @@
 import { z } from 'zod';
 
-export type TQuizResult = {
-  title: string;
-  id: string;
-  private: boolean;
-  questions: {
-    title: string;
-    choices: string[];
-    id: string;
-  }[];
-  author: {
-    id: string;
-    name: string;
-    createdAt: Date;
-  };
-  favorited?: boolean | null;
-} | null;
-
 export const quizInputSchema = z.object({
   title: z.string(),
   private: z.boolean(),
@@ -32,6 +15,24 @@ export const quizInputSchema = z.object({
     .max(50),
 });
 export type TQuizInput = z.infer<typeof quizInputSchema>;
+
+export const quizUpdateSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  private: z.boolean(),
+  questions: z
+    .array(
+      z.object({
+        quizId: z.string(),
+        title: z.string(),
+        correct: z.number(),
+        choices: z.array(z.string()).min(2).max(4),
+      }),
+    )
+    .min(1)
+    .max(50),
+});
+export type TQuizUpdateInput = z.infer<typeof quizUpdateSchema>;
 
 export const favoriteInputSchema = z.object({
   id: z.string(),
@@ -77,4 +78,26 @@ export type TQuizSelect = {
   };
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type TQuizWithStats = {
+  title: string;
+  id: string;
+  private: boolean;
+  questions: {
+    title: string;
+    choices: string[];
+    id: string;
+    correct: number;
+  }[];
+  author: {
+    id: string;
+    name: string;
+    createdAt: Date;
+  };
+  favorited: boolean;
+  stats: {
+    views: number;
+    favorites: number;
+  };
 };

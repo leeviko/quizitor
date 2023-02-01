@@ -3,6 +3,7 @@ import { createTRPCNext } from '@trpc/next';
 import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import { NextPageContext } from 'next';
 import type { AppRouter } from '~/server/routers/_app';
+import superjson from 'superjson';
 
 function getBaseUrl() {
   if (typeof window !== 'undefined') {
@@ -31,6 +32,7 @@ export interface SSRContext extends NextPageContext {
 export const trpc = createTRPCNext<AppRouter, SSRContext>({
   config({ ctx }) {
     return {
+      transformer: superjson,
       links: [
         loggerLink({
           enabled: (opts) =>

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Mode, TEditQuestion, TQuestion } from '~/pages/create-quiz';
+import { Mode, TEditQuestion, TQuestion } from '../components/ModifyQuiz';
 
 import styles from '../styles/QuizPage.module.css';
 import { EditChoice } from './Choice';
@@ -10,8 +10,8 @@ type Props = {
   mode: Mode;
   questions: Array<TQuestion>;
   setQuestions: Dispatch<SetStateAction<TQuestion[]>>;
-  edit: TEditQuestion | null;
-  setEdit: Dispatch<SetStateAction<TEditQuestion | null>>;
+  editQue: TEditQuestion | null;
+  setEditQue: Dispatch<SetStateAction<TEditQuestion | null>>;
 };
 
 const NewQuestion = ({
@@ -19,8 +19,8 @@ const NewQuestion = ({
   mode,
   questions,
   setQuestions,
-  edit,
-  setEdit,
+  editQue,
+  setEditQue,
 }: Props) => {
   const [errors, setErrors] = useState<Array<string>>([]);
   const [title, setTitle] = useState('');
@@ -28,19 +28,19 @@ const NewQuestion = ({
   const [choices, setChoices] = useState<string[]>(['', '', '', '']);
 
   useEffect(() => {
-    if (edit) {
-      setTitle(edit.title);
-      setCorrect(edit.correct);
-      setChoices(edit.choices);
+    if (editQue) {
+      setTitle(editQue.title);
+      setCorrect(editQue.correct);
+      setChoices(editQue.choices);
     }
-  }, [edit]);
+  }, [editQue]);
 
   const clearValues = () => {
     setErrors([]);
     setTitle('');
     setCorrect(-1);
     setChoices(['', '', '', '']);
-    setEdit(null);
+    setEditQue(null);
   };
 
   const handleAdd = () => {
@@ -68,8 +68,8 @@ const NewQuestion = ({
       choices,
     };
 
-    if (edit) {
-      newQues[edit.index] = newQue;
+    if (editQue) {
+      newQues[editQue.index] = newQue;
     } else {
       newQues.push(newQue);
     }
@@ -119,7 +119,7 @@ const NewQuestion = ({
             <span>Return</span>
           </button>
           <button onClick={handleAdd} className={styles.defaultBtn}>
-            {edit ? 'Update' : 'Add'}
+            {editQue ? 'Update' : 'Add'}
           </button>
         </div>
         {errors.length > 0 && (

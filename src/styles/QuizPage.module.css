@@ -19,7 +19,7 @@
 
 .questionTitle {
   color: var(--text);
-  margin: 0.5rem 0;
+  margin-top: 0.5rem;
   text-align: center;
 }
 
@@ -43,6 +43,14 @@
   font-weight: 600;
   padding: 0.1rem;
   font-family: inherit;
+}
+
+.currentQuestion {
+  display: flex;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  margin: 0 0 1rem 0;
 }
 
 .choices {
@@ -79,14 +87,19 @@
   filter: var(--white-filter);
 }
 
-.defaultBtn {
+.defaultBtn,
+.editBtn,
+.navigation .next {
   transition: 0.15s;
   color: rgba(0, 0, 0, 0.8);
   font-family: inherit;
   background-color: var(--accent);
-  border: 2px solid var(--accent);
   border-radius: 0.25rem;
   padding: 0.25rem 0.5rem;
+}
+
+.defaultBtn {
+  border: 2px solid var(--accent);
 }
 
 .defaultBtn:hover {
@@ -116,34 +129,68 @@
   color: var(--text);
   display: flex;
   align-items: center;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .navigation button {
   display: flex;
+  align-items: center;
   border: none;
   background: none;
   transition: 0.15s;
+  color: var(--text);
+}
+
+.navigation img {
+  filter: var(--white-filter);
+  opacity: 0.8;
 }
 
 .navigation .enabled {
   cursor: pointer;
 }
 
-.navigation button.disabled img {
+.navigation .disabled {
   opacity: 0.5;
 }
 
-.navigation .prev.enabled:hover {
-  translate: -5px;
-}
-
 .navigation .next {
-  transform: rotate(180deg);
+  margin-left: 0.75rem;
 }
 
 .navigation .next.enabled:hover {
-  translate: 5px;
+  background-color: var(--accent-hover);
+}
+
+.bottomActions {
+  color: var(--text);
+  position: absolute;
+  border-top: 3px solid rgba(0, 0, 0, 0.5);
+  bottom: 0;
+  left: 5rem;
+  width: calc(100% - 10rem);
+  margin-bottom: 2rem;
+}
+
+.bottomActions > div {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.bottomActions span {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.bottomActions div {
+  margin-right: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.editBtn {
+  border: none;
+}
+
+.editBtn:hover {
+  cursor: pointer;
+  background-color: var(--accent-hover);
 }

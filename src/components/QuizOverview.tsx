@@ -2,7 +2,7 @@ import Image from 'next/image';
 import styles from '../styles/QuizOverview.module.css';
 import QuizItem from '~/components/QuizItem';
 import { Dispatch, SetStateAction } from 'react';
-import { Mode, TEditQuestion, TQuestion } from '~/pages/create-quiz';
+import { Mode, TEditQuestion, TQuestion } from '~/components/ModifyQuiz';
 
 type Props = {
   setMode: Dispatch<SetStateAction<Mode>>;
@@ -13,7 +13,7 @@ type Props = {
   questions: TQuestion[];
   setQuestions: Dispatch<SetStateAction<TQuestion[]>>;
   mode: Mode;
-  setEdit: Dispatch<SetStateAction<TEditQuestion | null>>;
+  setEditQue: Dispatch<SetStateAction<TEditQuestion | null>>;
   handleSave: () => void;
   errors: string[];
 };
@@ -27,7 +27,7 @@ const QuizOverview = ({
   questions,
   setQuestions,
   mode,
-  setEdit,
+  setEditQue,
   handleSave,
   errors,
 }: Props) => {
@@ -37,7 +37,7 @@ const QuizOverview = ({
 
   const handleEdit = (index: number) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    setEdit({ ...questions[index]!, index });
+    setEditQue({ ...questions[index]!, index });
     setMode(Mode.New);
   };
 
@@ -108,17 +108,6 @@ const QuizOverview = ({
         </div>
       )}
       <div className={styles.botActions}>
-        {/* <div className={styles.leftActions}>
-          <button className={styles.discardBtn}>
-            <Image
-              src="/icons/delete.svg"
-              alt="Delete"
-              width={24}
-              height={24}
-            />
-            <span>Discard</span>
-          </button>
-        </div> */}
         <div className={styles.rightActions}>
           {questions.length > 0 && errors.length > 0 && (
             <ul className={`${styles.errorList} ${styles.bottom}`}>

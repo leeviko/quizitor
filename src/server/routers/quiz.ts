@@ -5,6 +5,7 @@ import {
   cursorSchema,
   offsetSchema,
   favoriteInputSchema,
+  quizUpdateSchema,
 } from '~/types/quiz';
 import {
   createQuiz,
@@ -14,6 +15,7 @@ import {
   favoriteQuiz,
   getFavoriteQuizzes,
   getUserRecent,
+  updateQuiz,
 } from '../functions/quiz';
 
 export const quizRouter = router({
@@ -21,16 +23,23 @@ export const quizRouter = router({
     .input(
       z.object({
         id: z.string(),
+        withCorrect: z.boolean().default(false),
       }),
     )
     .query(async ({ input, ctx }) => {
-      return getQuizById(ctx.session, input.id);
+      return getQuizById(ctx.session, input);
     }),
 
   create: protectedProcedure
     .input(quizInputSchema)
     .mutation(async ({ input, ctx }) => {
       return createQuiz(input, ctx.session.user.id);
+    }),
+
+  update: protectedProcedure
+    .input(quizUpdateSchema)
+    .mutation(async ({ input, ctx }) => {
+      return updateQuiz(input, ctx.session.user.id);
     }),
 
   favorite: protectedProcedure

@@ -1,7 +1,9 @@
 import { Context } from './context';
 import { initTRPC, TRPCError } from '@trpc/server';
+import superjson from 'superjson';
 
 const t = initTRPC.context<Context>().create({
+  transformer: superjson,
   errorFormatter({ shape }) {
     return shape;
   },

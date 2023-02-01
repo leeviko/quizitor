@@ -16,8 +16,8 @@
 - [x] Create quizzes
   - [x] Public/private
   - [x] Make favorite
+  - [x] Edit
   - [ ] Delete
-  - [ ] Edit
 - [ ] Search quizzes
 - [ ] Save quiz score
 - [ ] ...

@@ -5,21 +5,49 @@ import {
   TCursorInput,
   TOffsetInput,
   TQuizInput,
-  TQuizResult,
+  TQuizUpdateInput,
+  TQuizWithStats,
 } from '~/types/quiz';
 import { Session } from 'next-auth';
 
 // ----------------
 // Get quiz by id
 // ----------------
-export async function getQuizById(session: Session | null, id: string) {
+export async function getQuizById(
+  session: Session | null,
+  data: { id: string; withCorrect: boolean },
+) {
   let userId = null;
   if (session) {
     userId = session.user.id;
+  } else {
+    data.withCorrect = false;
   }
+  const { id, withCorrect } = data;
 
-  const quiz: TQuizResult = await prisma.quiz.findUnique({
-    where: { id },
+  const views = await prisma.interactions.groupBy({
+    by: ['quizId'],
+    where: { quizId: id },
+    _sum: {
+      viewed: true,
+    },
+  });
+  const favorites = await prisma.interactions.groupBy({
+    by: ['quizId'],
+    where: { quizId: id, favorited: true },
+    _count: {
+      favorited: true,
+    },
+  });
+
+  const stats = {
+    views: views[0]?._sum.viewed ?? 0,
+    favorites: favorites[0]?._count.favorited ?? 0,
+  };
+
+  const quiz = await prisma.quiz.findUnique({
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    where: { id, authorId: withCorrect ? userId! : undefined },
     select: {
       id: true,
       title: true,
@@ -36,6 +64,7 @@ export async function getQuizById(session: Session | null, id: string) {
           id: true,
           title: true,
           choices: true,
+          correct: withCorrect,
         },
       },
     },
@@ -47,17 +76,21 @@ export async function getQuizById(session: Session | null, id: string) {
     });
   }
 
+  const result: TQuizWithStats = { ...quiz, stats, favorited: false };
+
   if (!userId || quiz.private) {
     return {
       status: 200,
-      result: { ...quiz, favorited: false },
+      result: {
+        ...result,
+        favorited: false,
+      },
     };
   }
 
   // -----------------
   // UPDATE VIEW COUNT
   // -----------------
-
   const interactions = await prisma.interactions.findFirst({
     where: { quizId: quiz.id, userId },
     select: { id: true, viewed: true, viewedAt: true, favorited: true },
@@ -80,7 +113,10 @@ export async function getQuizById(session: Session | null, id: string) {
 
     return {
       status: 200,
-      result: { ...quiz, favorited: false },
+      result: {
+        ...result,
+        favorited: false,
+      },
     };
   }
 
@@ -96,7 +132,10 @@ export async function getQuizById(session: Session | null, id: string) {
 
   return {
     status: 200,
-    result: { ...quiz, favorited: interactions.favorited },
+    result: {
+      ...result,
+      favorited: interactions.favorited,
+    },
   };
 }
 
@@ -117,7 +156,32 @@ export async function createQuiz(data: TQuizInput, userId: string) {
 }
 
 // ----------------
-// Create quiz
+// Update quiz
+// ----------------
+export async function updateQuiz(data: TQuizUpdateInput, userId: string) {
+  const { id, title, private: isPrivate, questions } = data;
+
+  const result = await prisma.$transaction([
+    prisma.quiz.update({
+      where: { id, authorId: userId },
+      data: { title, private: isPrivate },
+    }),
+    prisma.questions.deleteMany({ where: { quizId: id } }),
+    prisma.questions.createMany({ data: questions }),
+  ]);
+
+  if (result.length !== 3) {
+    throw new TRPCError({
+      message: 'Something went wrong while updating',
+      code: 'INTERNAL_SERVER_ERROR',
+    });
+  }
+
+  return { result };
+}
+
+// ----------------
+// Favorite quiz
 // ----------------
 export async function favoriteQuiz(quizId: string, userId: string) {
   const exists = await prisma.interactions.findFirst({

@@ -91,12 +91,11 @@ const Choice = ({ index, choices, active, setActive }: ChoiceProps) => {
       className={`${styles.choice} ${
         active === index ? styles.active : styles.unactive
       } ${choices[index] ? styles.notEmpty : styles.empty}`}
+      style={choices[index] ? { cursor: 'pointer' } : undefined}
+      onClick={() => handleSetActive(index)}
     >
       <div className={styles.choiceInputContainer}>
-        <button
-          className={styles.correctContainer}
-          onClick={() => handleSetActive(index)}
-        >
+        <button className={styles.correctContainer}>
           {active === index && (
             <Image
               src="/icons/check.svg"
