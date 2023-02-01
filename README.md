@@ -17,7 +17,7 @@
   - [x] Public/private
   - [x] Make favorite
   - [x] Edit
-  - [ ] Delete
+  - [x] Delete
 - [ ] Search quizzes
 - [ ] Save quiz score
 - [ ] ...

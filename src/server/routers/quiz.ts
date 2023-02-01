@@ -16,6 +16,7 @@ import {
   getFavoriteQuizzes,
   getUserRecent,
   updateQuiz,
+  deleteQuiz,
 } from '../functions/quiz';
 
 export const quizRouter = router({
@@ -40,6 +41,12 @@ export const quizRouter = router({
     .input(quizUpdateSchema)
     .mutation(async ({ input, ctx }) => {
       return updateQuiz(input, ctx.session.user.id);
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      return deleteQuiz(input.id, ctx.session.user.id);
     }),
 
   favorite: protectedProcedure

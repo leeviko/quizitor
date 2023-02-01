@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { Mode, TEditQuestion, TQuestion } from '~/components/ModifyQuiz';
 
 type Props = {
+  deleteQuiz?: () => Promise<void>;
   setMode: Dispatch<SetStateAction<Mode>>;
   setTitle: Dispatch<SetStateAction<string>>;
   setIsPrivate: Dispatch<SetStateAction<boolean>>;
@@ -19,6 +20,7 @@ type Props = {
 };
 
 const QuizOverview = ({
+  deleteQuiz,
   setMode,
   setTitle,
   setIsPrivate,
@@ -108,6 +110,13 @@ const QuizOverview = ({
         </div>
       )}
       <div className={styles.botActions}>
+        {deleteQuiz && (
+          <div className={styles.leftActions}>
+            <button className={styles.deleteBtn} onClick={deleteQuiz}>
+              Delete
+            </button>
+          </div>
+        )}
         <div className={styles.rightActions}>
           {questions.length > 0 && errors.length > 0 && (
             <ul className={`${styles.errorList} ${styles.bottom}`}>

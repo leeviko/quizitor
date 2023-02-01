@@ -181,19 +181,44 @@ export async function updateQuiz(data: TQuizUpdateInput, userId: string) {
 }
 
 // ----------------
+// Delete quiz
+// ----------------
+export async function deleteQuiz(id: string, userId: string) {
+  const isAuthor = await prisma.quiz.findUnique({
+    where: { id, authorId: userId },
+  });
+
+  if (!isAuthor) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+
+  const deleteInteractions = prisma.interactions.deleteMany({
+    where: { quizId: id },
+  });
+  const deleteQuestions = prisma.questions.deleteMany({
+    where: { quizId: id },
+  });
+  const deleteQuiz = prisma.quiz.delete({
+    where: { id },
+  });
+
+  const result = await prisma.$transaction([
+    deleteInteractions,
+    deleteQuestions,
+    deleteQuiz,
+  ]);
+
+  return { result };
+}
+
+// ----------------
 // Favorite quiz
 // ----------------
 export async function favoriteQuiz(quizId: string, userId: string) {
   const exists = await prisma.interactions.findFirst({
     where: {
-      AND: [
-        {
-          quizId,
-        },
-        {
-          userId,
-        },
-      ],
+      quizId,
+      userId,
     },
     select: {
       id: true,

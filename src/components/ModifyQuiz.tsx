@@ -22,17 +22,21 @@ export type TEditQuestion = TQuestion & {
   index: number;
 };
 
-const ModifyQuiz = ({
-  quiz,
-  mutateAsync,
-  isLoading,
-  error,
-}: {
+type Props = {
   quiz?: TQuizWithStats;
+  deleteQuiz?: () => Promise<void>;
   mutateAsync: any;
   isLoading: boolean;
   error: any;
-}) => {
+};
+
+const ModifyQuiz = ({
+  quiz,
+  deleteQuiz,
+  mutateAsync,
+  isLoading,
+  error,
+}: Props) => {
   const router = useRouter();
   const [errors, setErrors] = useState<string[]>([]);
   const [mode, setMode] = useState<Mode>(Mode.Overview);
@@ -110,6 +114,7 @@ const ModifyQuiz = ({
         ) : (
           <>
             <QuizOverview
+              deleteQuiz={deleteQuiz}
               setMode={setMode}
               setTitle={setTitle}
               setIsPrivate={setIsPrivate}

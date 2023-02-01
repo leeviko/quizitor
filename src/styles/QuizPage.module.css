@@ -98,6 +98,11 @@
   padding: 0.25rem 0.5rem;
 }
 
+.editBtn a {
+  text-decoration: none;
+  color: inherit;
+}
+
 .defaultBtn {
   border: 2px solid var(--accent);
 }

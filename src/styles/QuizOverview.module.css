@@ -135,6 +135,14 @@
   opacity: 1;
 }
 
+.newBtn {
+  width: 65px;
+  margin: 0.5rem 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .defaultBtn {
   transition: 0.15s;
   color: rgba(0, 0, 0, 0.8);
@@ -143,14 +151,6 @@
   border: 2px solid var(--accent);
   border-radius: 0.25rem;
   padding: 0.25rem 0.5rem;
-}
-
-.newBtn {
-  width: 65px;
-  margin: 0.5rem 0;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .defaultBtn:hover {
@@ -209,11 +209,32 @@
   display: inline-flex;
 }
 
+.deleteBtn {
+  transition: 0.15s;
+  color: rgba(0, 0, 0, 0.8);
+  font-family: inherit;
+  background-color: var(--red);
+  border: 2px solid var(--red);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.deleteBtn:hover {
+  cursor: pointer;
+  background-color: var(--red-hover);
+  border: 2px solid var(--red-hover);
+}
+
+.deleteBtn:active {
+  transition: 0.05s;
+  outline: 2px solid var(--red-hover);
+  outline-offset: 2px;
+}
+
 .botActions .rightActions {
   float: right;
 }
 
-.discardBtn,
 .privateBtn {
   font-family: inherit;
   border: none;
@@ -222,13 +243,11 @@
   align-items: center;
 }
 
-.discardBtn:hover,
 .privateBtn:hover {
   cursor: pointer;
   font-weight: 600;
 }
 
-.discardBtn span,
 .privateBtn span {
   margin-left: 0.1rem;
 }
