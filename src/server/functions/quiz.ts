@@ -346,14 +346,16 @@ export async function getQuizList(data: TOffsetInput, session: Session | null) {
   // Combine stats with quiz
   let quizzes = result.map((quiz) => ({
     ...quiz,
-    ...statsResult.find((stats) => stats.quizId === quiz.id),
+    stats: {
+      ...statsResult.find((stats) => stats.quizId === quiz.id),
+    },
   }));
 
   const srtByViews = (a: any, b: any) => {
-    return b._sum.viewed - a._sum.viewed;
+    return b.stats._sum.viewed - a.stats._sum.viewed;
   };
   const srtByFavs = (a: any, b: any) => {
-    return b._count.favorited - a._count.favorited;
+    return b.stats._count.favorited - a.stats._count.favorited;
   };
 
   if (sortBy === 'views') {
@@ -363,7 +365,7 @@ export async function getQuizList(data: TOffsetInput, session: Session | null) {
   }
 
   if (quizzes.length < limit) {
-    const fillQuizzes = await prisma.quiz.findMany({
+    const fillQuizzes: any = await prisma.quiz.findMany({
       take: limit - quizzes.length,
       where: { id: { notIn: statsResult.map(({ quizId }) => quizId) } },
       select: quizSelect,
