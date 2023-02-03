@@ -17,6 +17,7 @@ import {
   getUserRecent,
   updateQuiz,
   deleteQuiz,
+  getUserQuizzes,
 } from '../functions/quiz';
 
 export const quizRouter = router({
@@ -28,7 +29,7 @@ export const quizRouter = router({
       }),
     )
     .query(async ({ input, ctx }) => {
-      return getQuizById(ctx.session, input);
+      return getQuizById(input, ctx.session);
     }),
 
   create: protectedProcedure
@@ -46,7 +47,7 @@ export const quizRouter = router({
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input, ctx }) => {
-      return deleteQuiz(input.id, ctx.session.user.id);
+      return deleteQuiz(input.id, ctx.session.user);
     }),
 
   favorite: protectedProcedure
@@ -62,7 +63,13 @@ export const quizRouter = router({
   userRecent: protectedProcedure
     .input(offsetSchema)
     .query(async ({ input, ctx }) => {
-      return getUserRecent(input, ctx.session.user.id);
+      return getUserRecent(input, ctx.session.user);
+    }),
+
+  userQuizzes: publicProcedure
+    .input(cursorSchema.extend({ id: z.string() }))
+    .query(async ({ input, ctx }) => {
+      return getUserQuizzes(input, ctx.session);
     }),
 
   quizList: publicProcedure

@@ -6,6 +6,7 @@ import NewQuestion from '~/components/NewQuestion';
 import { useRouter } from 'next/router';
 import Loader from '~/components/Loader';
 import { TQuizWithStats } from '~/types/quiz';
+import { isTRPCClientError } from '~/utils/trpc';
 
 export type TQuestion = {
   title: string;
@@ -24,19 +25,12 @@ export type TEditQuestion = TQuestion & {
 
 type Props = {
   quiz?: TQuizWithStats;
-  deleteQuiz?: () => Promise<void>;
+  deleteQuiz?: () => void;
   mutateAsync: any;
   isLoading: boolean;
-  error: any;
 };
 
-const ModifyQuiz = ({
-  quiz,
-  deleteQuiz,
-  mutateAsync,
-  isLoading,
-  error,
-}: Props) => {
+const ModifyQuiz = ({ quiz, deleteQuiz, mutateAsync, isLoading }: Props) => {
   const router = useRouter();
   const [errors, setErrors] = useState<string[]>([]);
   const [mode, setMode] = useState<Mode>(Mode.Overview);
@@ -57,8 +51,10 @@ const ModifyQuiz = ({
 
   const handleSave = async () => {
     let errs: string[] = [];
-    if (!title) {
-      errs = [...errs, 'Title must be set'];
+    if (!title || title.length < 3) {
+      errs = [...errs, 'Title must be at least 3 characters long'];
+    } else if (title.length > 50) {
+      errs = [...errs, 'Title can contain at most 50 characters'];
     }
     if (questions.length === 0) {
       errs = [...errs, 'There must be at least 1 question'];
@@ -86,13 +82,19 @@ const ModifyQuiz = ({
       };
     }
 
-    const result = await mutateAsync(reqParams);
-
-    if (!error) {
-      return router.push(`/quizzes/${result.result.id ?? quiz?.id}`);
-    } else {
+    let result;
+    try {
+      result = await mutateAsync(reqParams);
+    } catch (err) {
+      if (isTRPCClientError(err)) {
+      } else {
+      }
+      console.log(err);
       setErrors(['Failed to save quiz']);
+      return;
     }
+
+    return router.push(`/quizzes/${result.result.id ?? quiz?.id}`);
   };
 
   return (

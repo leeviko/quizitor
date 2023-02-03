@@ -23,7 +23,7 @@ const Auth: any = ({
   useEffect(() => {
     if (status === 'loading') return;
     if (user) {
-      if (opts.role === 'ADMIN' && user.role != 'ADMIN') {
+      if (opts.role === 'ADMIN' && user.role !== 'ADMIN') {
         router.push('/');
       }
     }

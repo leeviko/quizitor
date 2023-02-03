@@ -26,15 +26,10 @@
   z-index: 0;
   transition: 0.15s;
   border-radius: 0.25rem;
-  border: 1px solid var(--accent);
 }
 
 .unactive.notEmpty .choiceInputContainer:hover {
   background-color: var(--accent-0-5);
-}
-
-.choice.notEmpty .choiceInputContainer {
-  border-width: 2px;
 }
 
 .choice input {

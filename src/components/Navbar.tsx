@@ -1,12 +1,12 @@
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 
-import styles from '../styles/Nav.module.css';
+import styles from '~/styles/Nav.module.css';
 
 const Navbar = () => {
   const { status } = useSession();
   return (
-    <nav className={styles.nav}>
+    <nav className={`${styles.nav} margin`}>
       <Link href="/" className={styles.logo}>
         Quizitor
       </Link>

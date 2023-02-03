@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import styles from '../styles/Choice.module.css';
+import styles from '~/styles/Choice.module.css';
 
 type ChoiceProps = {
   index: number;

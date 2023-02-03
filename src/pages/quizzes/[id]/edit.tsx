@@ -1,13 +1,20 @@
 import { trpc } from '~/utils/trpc';
 import { useRouter } from 'next/router';
 import ModifyQuiz from '~/components/ModifyQuiz';
+import { useState } from 'react';
+import Dialog, { TDialogContent } from '~/components/Dialog';
 
 const EditQuiz = () => {
   const router = useRouter();
   const id = router.query.id as string;
   const { data } = trpc.quiz.byId.useQuery({ id, withCorrect: true });
-  const { mutateAsync, isLoading, error } = trpc.quiz.update.useMutation();
+  const { mutateAsync, isLoading } = trpc.quiz.update.useMutation();
   const { mutateAsync: deleteMutate } = trpc.quiz.delete.useMutation();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState<TDialogContent>({
+    title: '',
+    message: '',
+  });
 
   const deleteQuiz = async () => {
     let result;
@@ -17,6 +24,7 @@ const EditQuiz = () => {
       });
     } catch (err) {
       console.log('Error while deleting: ', err);
+      return;
     }
 
     if (result) {
@@ -24,15 +32,34 @@ const EditQuiz = () => {
     }
   };
 
+  const closeDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const confirmDelete = () => {
+    setDialogContent({
+      title: 'Delete',
+      message: 'Are you sure you want to delete the quiz?',
+      no: 'Cancel',
+      onConfirm() {
+        deleteQuiz();
+      },
+      onClose() {
+        closeDialog();
+      },
+    });
+    setDialogOpen(true);
+  };
+
   return (
     <>
+      {dialogOpen && <Dialog {...dialogContent} />}
       {data?.result && (
         <ModifyQuiz
           quiz={data.result}
-          deleteQuiz={deleteQuiz}
+          deleteQuiz={confirmDelete}
           mutateAsync={mutateAsync}
           isLoading={isLoading}
-          error={error}
         />
       )}
     </>

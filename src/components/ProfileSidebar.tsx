@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import styles from '../styles/ProfileSidebar.module.css';
+import styles from '~/styles/ProfileSidebar.module.css';
 
 const ProfileSidebar = () => {
   const path = useRouter().pathname;

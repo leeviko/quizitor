@@ -17,6 +17,7 @@
   --modal-bg: #26323f;
 
   --text: rgba(255, 255, 255, 0.8);
+  --text-grey: rgba(255, 255, 255, 0.4);
 
   --skeleton-bg: var(--accent);
   --skeleton-hg: #9ecdec; /*  accent-0-5 */
@@ -26,6 +27,9 @@
   --light-blue: rgb(62, 180, 217);
   --light-blue-rgb: 62, 180, 217;
   --light-blue-0-5: rgba(var(--light-blue-rgb), 0.5);
+
+  --green: rgb(52, 170, 47);
+  --green-hover: rgb(45, 149, 41);
 
   --red: rgb(212, 43, 43);
   --red-rgb: 212, 43, 43;
@@ -39,6 +43,7 @@
 
   --pad: 3rem;
   --modal-pad: 2rem 5rem;
+  --margin: 0 5rem;
 }
 
 body {
@@ -54,10 +59,26 @@ a {
   color: var(--blue);
 }
 
+.margin {
+  width: 55%;
+  max-width: 850px;
+  margin: 0 auto;
+}
+
 .default .center {
   width: 55%;
   max-width: 850px;
   margin: 0 auto;
   position: relative;
   margin-top: 5rem;
+}
+
+@media screen and (max-width: 775px) {
+  .margin {
+    width: auto;
+    margin: 0 2rem;
+  }
+  .default .center {
+    width: 75%;
+  }
 }

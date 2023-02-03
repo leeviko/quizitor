@@ -2,7 +2,7 @@ import type { AppType, AppProps } from 'next/app';
 import { trpc } from '~/utils/trpc';
 import { SessionProvider } from 'next-auth/react';
 
-import '../styles/globals.css';
+import '~/styles/globals.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 import DefaultLayout from '~/layouts/DefaultLayout';
 import { NextComponentType, NextPage, NextPageContext } from 'next';

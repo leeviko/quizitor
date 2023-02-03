@@ -2,7 +2,7 @@ import QuizCard, { QuizCardSkeleton } from '~/components/QuizCard';
 import ProfileLayout from '~/layouts/ProfileLayout';
 import { trpc } from '~/utils/trpc';
 
-import styles from '../../styles/ProfileCards.module.css';
+import styles from '~/styles/ProfileCards.module.css';
 
 const ProfileFavorites = () => {
   const result = trpc.quiz.favorites.useQuery({
@@ -16,7 +16,7 @@ const ProfileFavorites = () => {
       <div className={styles.content}>
         <div className={styles.items}>
           {result.isLoading
-            ? [...Array(6)].map((i) => <QuizCardSkeleton key={i} />)
+            ? [...Array(6)].map((_, i) => <QuizCardSkeleton key={i} />)
             : result.data?.result.map((item) => (
                 <QuizCard
                   key={item.quiz.id}

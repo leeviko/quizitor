@@ -107,13 +107,12 @@
 }
 
 .item .question {
-  background-color: var(--light-blue-0-5);
-  border: 2px solid var(--light-blue);
+  background-color: var(--accent-0-5);
+  border: 2px solid var(--accent);
   border-right: none;
 }
 
 .item .answer {
-  background-color: var(--accent-0-5);
   border: 2px solid var(--accent);
   border-left: none;
 }
@@ -178,6 +177,8 @@
 }
 
 .errorList {
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 0.85rem;
   position: absolute;
   width: 250px;
@@ -188,6 +189,8 @@
 }
 
 .errorList.bottom {
+  left: auto;
+  transform: none;
   text-align: left;
   position: relative;
   margin: auto;

@@ -10,7 +10,7 @@ datasource db {
 
 model User {
   id            String      @id @default(uuid())
-  name          String      @unique @db.VarChar(55)
+  name          String      @unique @db.VarChar(30)
   password      String
   role          Role        @default(USER)
   createdAt     DateTime    @default(now())
@@ -20,7 +20,7 @@ model User {
 
 model Quiz {
   id            String      @id @default(uuid())
-  title         String      @db.VarChar(100)
+  title         String      @db.VarChar(50)
   authorId      String
   private       Boolean     @default(true)
   createdAt     DateTime    @unique @default(now())
@@ -32,7 +32,7 @@ model Quiz {
 
 model Questions {
   id            String      @id @default(uuid())
-  title         String      @db.VarChar(100)
+  title         String      @db.VarChar(50)
   quizId        String
   quiz          Quiz        @relation(fields: [quizId], references: [id])
   correct       Int

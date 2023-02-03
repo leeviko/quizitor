@@ -6,21 +6,21 @@ import {
   TOffsetInput,
   TQuizInput,
   TQuizUpdateInput,
+  TQuizWithInteractions,
   TQuizWithStats,
 } from '~/types/quiz';
-import { Session } from 'next-auth';
+import { Session, User } from 'next-auth';
 
 // ----------------
 // Get quiz by id
 // ----------------
 export async function getQuizById(
-  session: Session | null,
   data: { id: string; withCorrect: boolean },
+  session: Session | null,
 ) {
-  let userId = null;
-  if (session) {
-    userId = session.user.id;
-  } else {
+  const userId = session?.user.id;
+  const isAdmin = session?.user.role === 'ADMIN';
+  if (!userId) {
     data.withCorrect = false;
   }
   const { id, withCorrect } = data;
@@ -70,6 +70,15 @@ export async function getQuizById(
     },
   });
   if (!quiz) {
+    throw new TRPCError({
+      code: 'NOT_FOUND',
+      message: 'Quiz does not exist',
+    });
+  }
+
+  const isAuthor = quiz.author.id === userId;
+
+  if (quiz.private && !isAuthor && !isAdmin) {
     throw new TRPCError({
       code: 'NOT_FOUND',
       message: 'Quiz does not exist',
@@ -183,12 +192,15 @@ export async function updateQuiz(data: TQuizUpdateInput, userId: string) {
 // ----------------
 // Delete quiz
 // ----------------
-export async function deleteQuiz(id: string, userId: string) {
+export async function deleteQuiz(id: string, user: User) {
+  const { id: userId, role } = user;
+  const isAdmin = role === 'ADMIN';
+
   const isAuthor = await prisma.quiz.findUnique({
     where: { id, authorId: userId },
   });
 
-  if (!isAuthor) {
+  if (!isAuthor && !isAdmin) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
 
@@ -269,7 +281,7 @@ export async function getRecentQuizzes(
     decodedCursor = Buffer.from(cursor, 'base64').toString('binary');
   }
 
-  const queryResult = await prisma.quiz.findMany({
+  const queryResult: TQuizWithInteractions[] = await prisma.quiz.findMany({
     take: page === 'next' ? limit : -limit,
     skip: 0,
     cursor: decodedCursor
@@ -282,6 +294,69 @@ export async function getRecentQuizzes(
     },
     where: {
       private: false,
+    },
+    select: quizSelectWithInteractions ?? defaultQuizSelect,
+  });
+
+  let nextCursor;
+  if (queryResult.length > 1) {
+    const lastQuiz = queryResult[queryResult.length - 1];
+    nextCursor = Buffer.from(JSON.stringify(lastQuiz?.createdAt)).toString(
+      'base64',
+    );
+  }
+
+  return {
+    status: 200,
+    result: queryResult,
+    cursor: { prev: cursor || null, next: nextCursor || null },
+  };
+}
+
+// ----------------
+// Get specific user's
+// quizzes
+// ----------------
+export async function getUserQuizzes(
+  data: TCursorInput & { id: string },
+  session: Session | null,
+) {
+  const { cursor, limit, page, id } = data;
+  let userId = null;
+  let quizSelectWithInteractions;
+  if (session) {
+    userId = session.user.id;
+    quizSelectWithInteractions = {
+      ...defaultQuizSelect,
+      interactions: {
+        where: { userId },
+        select: {
+          favorited: true,
+        },
+      },
+    };
+  }
+  const isAuthor = userId === id || session?.user.role === 'ADMIN';
+
+  let decodedCursor;
+  if (cursor) {
+    decodedCursor = Buffer.from(cursor, 'base64').toString('binary');
+  }
+
+  const queryResult: TQuizWithInteractions[] = await prisma.quiz.findMany({
+    take: page === 'next' ? limit : -limit,
+    skip: 0,
+    cursor: decodedCursor
+      ? {
+          createdAt: decodedCursor,
+        }
+      : undefined,
+    orderBy: {
+      createdAt: 'desc',
+    },
+    where: {
+      private: !isAuthor && false,
+      authorId: id,
     },
     select: quizSelectWithInteractions ?? defaultQuizSelect,
   });
@@ -339,7 +414,10 @@ export async function getQuizList(data: TOffsetInput, session: Session | null) {
   });
 
   const result = await prisma.quiz.findMany({
-    where: { id: { in: statsResult.map(({ quizId }) => quizId) } },
+    where: {
+      id: { in: statsResult.map(({ quizId }) => quizId) },
+      private: false,
+    },
     select: quizSelect,
   });
 
@@ -367,7 +445,10 @@ export async function getQuizList(data: TOffsetInput, session: Session | null) {
   if (quizzes.length < limit) {
     const fillQuizzes: any = await prisma.quiz.findMany({
       take: limit - quizzes.length,
-      where: { id: { notIn: statsResult.map(({ quizId }) => quizId) } },
+      where: {
+        id: { notIn: statsResult.map(({ quizId }) => quizId) },
+        private: false,
+      },
       select: quizSelect,
       orderBy: { createdAt: 'desc' },
     });
@@ -407,8 +488,9 @@ export async function getFavoriteQuizzes(data: TOffsetInput, userId: string) {
 // ----------------
 // Get user recent
 // ----------------
-export async function getUserRecent(data: TOffsetInput, userId: string) {
+export async function getUserRecent(data: TOffsetInput, user: User) {
   const { skip, limit } = data;
+  const { id: userId } = user;
 
   const result = await prisma.interactions.findMany({
     skip,

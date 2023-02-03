@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { trpc } from '~/utils/trpc';
-import styles from '../styles/QuizCard.module.css';
+import styles from '~/styles/QuizCard.module.css';
 
 export const QuizCardSkeleton = () => {
   return (
@@ -38,7 +38,7 @@ const QuizCard = ({
 }) => {
   const titleLength = 35;
   const [favorite, setFavorite] = useState<boolean | undefined>(favorited);
-  const { status } = useSession();
+  const { data, status } = useSession();
   const { mutateAsync } = trpc.quiz.favorite.useMutation();
 
   const favoriteQuiz = async () => {
@@ -83,7 +83,8 @@ const QuizCard = ({
         </span>
       )}
       <p className={styles.authorName}>
-        Created by <strong>{authorName}</strong>
+        Created by{' '}
+        <strong>{data?.user.name === authorName ? 'You' : authorName}</strong>
       </p>
     </div>
   );

@@ -1,10 +1,9 @@
 .nav {
-  padding: 0.25rem var(--pad);
+  padding: 0.25rem 0;
   height: 50px;
   left: 0;
   display: flex;
   align-items: center;
-  /* background-color: var(--accent-0-25); */
   font-family: var(--poppins);
 }
 
@@ -17,13 +16,20 @@
 }
 
 .items {
+  width: 100%;
+  display: flex;
+  justify-content: right;
   font-size: 0.9rem;
-  position: absolute;
-  right: var(--pad);
 }
 
 .items a {
   color: var(--text);
   margin-left: 1rem;
   text-decoration: none;
+}
+
+@media screen and (max-width: 775px) {
+  .items {
+    width: auto;
+  }
 }

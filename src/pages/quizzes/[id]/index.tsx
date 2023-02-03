@@ -11,7 +11,7 @@ import ModalLayout from '~/layouts/ModalLayout';
 import { TQuizWithStats } from '~/types/quiz';
 import { trpc } from '~/utils/trpc';
 
-import styles from '../../../styles/QuizPage.module.css';
+import styles from '~/styles/QuizPage.module.css';
 
 type TQuestion = {
   id: string;

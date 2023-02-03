@@ -6,16 +6,14 @@ import HomeFeed from '~/components/HomeFeed';
 
 const Home = () => {
   const { data, status } = useSession();
-  const recentResult = trpc.quiz.recent.useQuery({
-    limit: 6,
-    cursor: null,
-    page: 'next',
-  });
-  const popularResult = trpc.quiz.quizList.useQuery({
-    skip: 0,
-    limit: 6,
-    sortBy: 'views',
-  });
+  const result = trpc.quiz.recent.useQuery(
+    {
+      limit: 6,
+      cursor: null,
+      page: 'next',
+    },
+    { refetchOnWindowFocus: false },
+  );
 
   return (
     <>
@@ -25,8 +23,7 @@ const Home = () => {
             {status === 'authenticated' ? (
               <>
                 <AuthHeader username={data.user.name} />
-                <HomeFeed result={recentResult} title="Recent" />
-                <HomeFeed result={popularResult} title="Popular" />
+                <HomeFeed result={result} title="Recent" />
               </>
             ) : (
               <Header />

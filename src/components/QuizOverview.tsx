@@ -1,11 +1,11 @@
 import Image from 'next/image';
-import styles from '../styles/QuizOverview.module.css';
+import styles from '~/styles/QuizOverview.module.css';
 import QuizItem from '~/components/QuizItem';
 import { Dispatch, SetStateAction } from 'react';
 import { Mode, TEditQuestion, TQuestion } from '~/components/ModifyQuiz';
 
 type Props = {
-  deleteQuiz?: () => Promise<void>;
+  deleteQuiz?: () => void;
   setMode: Dispatch<SetStateAction<Mode>>;
   setTitle: Dispatch<SetStateAction<string>>;
   setIsPrivate: Dispatch<SetStateAction<boolean>>;
@@ -61,8 +61,8 @@ const QuizOverview = ({
       {questions.length !== 0 ? (
         <div className={styles.grid}>
           <div className={styles.titles}>
-            <h3>Questions</h3>
-            <h3>Answers</h3>
+            <h3>Question</h3>
+            <h3>Answer</h3>
           </div>
           <div className={styles.gridItems}>
             {questions.map((item, i) => (

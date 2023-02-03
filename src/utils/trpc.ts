@@ -1,4 +1,4 @@
-import { httpBatchLink, loggerLink } from '@trpc/client';
+import { httpBatchLink, loggerLink, TRPCClientError } from '@trpc/client';
 import { createTRPCNext } from '@trpc/next';
 import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import { NextPageContext } from 'next';
@@ -16,6 +16,12 @@ function getBaseUrl() {
   }
 
   return `http://127.0.0.1:${process.env.PORT ?? 3000}`;
+}
+
+export function isTRPCClientError(
+  cause: unknown,
+): cause is TRPCClientError<AppRouter> {
+  return cause instanceof TRPCClientError;
 }
 
 export interface SSRContext extends NextPageContext {

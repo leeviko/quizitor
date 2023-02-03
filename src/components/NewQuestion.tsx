@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Mode, TEditQuestion, TQuestion } from '../components/ModifyQuiz';
+import { Mode, TEditQuestion, TQuestion } from '~/components/ModifyQuiz';
 
-import styles from '../styles/QuizPage.module.css';
+import styles from '~/styles/QuizPage.module.css';
 import { EditChoice } from './Choice';
 
 type Props = {
@@ -45,8 +45,10 @@ const NewQuestion = ({
 
   const handleAdd = () => {
     let errs: string[] = [];
-    if (!title) {
-      errs = [...errs, 'Title not set'];
+    if (!title || title.length < 3) {
+      errs = [...errs, 'Title must be at least 3 characters long'];
+    } else if (title.length > 50) {
+      errs = [...errs, 'Title can contain at most 50 characters'];
     }
     if (!choices[0] || !choices[1]) {
       errs = [...errs, 'First two choices must be set'];
@@ -56,6 +58,7 @@ const NewQuestion = ({
     } else if (!choices[correct]) {
       errs = [...errs, 'Correct choice cannot be empty'];
     }
+
     if (errs.length > 0) {
       setErrors(errs);
       return;
@@ -122,15 +125,21 @@ const NewQuestion = ({
             {editQue ? 'Update' : 'Add'}
           </button>
         </div>
-        {errors.length > 0 && (
-          <div className={styles.errors}>
+        {
+          <div
+            className={styles.errors}
+            style={{
+              visibility: errors.length > 0 ? 'visible' : 'hidden',
+              opacity: errors.length > 0 ? 1 : 0,
+              transition: 'opacity 0.15s ease-in-out',
+            }}
+          >
             <ul>
-              {errors.map((error, i) => (
-                <li key={i}>- {error}</li>
-              ))}
+              {errors.length > 0 &&
+                errors.map((error, i) => <li key={i}>- {error}</li>)}
             </ul>
           </div>
-        )}
+        }
       </div>
     </div>
   );

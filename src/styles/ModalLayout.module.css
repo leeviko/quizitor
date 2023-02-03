@@ -56,21 +56,11 @@
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-@media screen and (min-width: 1500px) {
-  .block {
-    width: 30%;
-  }
-  .wrapper {
-    left: 30%;
-    width: 40%;
-  }
-}
-
-@media screen and (max-width: 750px) {
+@media screen and (max-width: 775px) {
   .block {
     display: none;
   }
-  .wrapper {
+  .default .wrapper {
     left: 0;
     width: 100%;
   }
@@ -83,5 +73,25 @@
   .wide .wrapper {
     left: 0;
     width: 100%;
+  }
+}
+
+@media screen and (min-width: 1500px) {
+  .block {
+    width: 30%;
+  }
+  .wrapper {
+    left: 30%;
+    width: 40%;
+  }
+}
+
+@media screen and (min-width: 1800px) {
+  .default .block {
+    width: 27.5%;
+  }
+  .default .wrapper {
+    left: 27.5%;
+    width: 45%;
   }
 }
