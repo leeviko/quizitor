@@ -491,11 +491,9 @@ export async function getUserRecent(data: TOffsetInput, user: User) {
     skip,
     take: limit,
     where: {
-      AND: [
-        { userId },
-        { viewedAt: { not: undefined || null } },
-        { quiz: { private: false } },
-      ],
+      userId,
+      viewedAt: { not: undefined || null },
+      quiz: { private: false },
     },
     select: {
       id: true,
