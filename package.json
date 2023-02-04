@@ -12,6 +12,7 @@
     "generate": "dotenv -e .env.local -- prisma generate",
     "db-push": "dotenv -e .env.local -- prisma db push",
     "migrate": "prisma migrate deploy",
+    "studio": "dotenv -e .env.local -- prisma studio",
     "postinstall": "prisma generate"
   },
   "prisma": {

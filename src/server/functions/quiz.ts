@@ -23,18 +23,18 @@ export async function getQuizById(
   if (!userId) {
     data.withCorrect = false;
   }
-  const { id, withCorrect } = data;
+  const { id: quizId, withCorrect } = data;
 
   const views = await prisma.interactions.groupBy({
     by: ['quizId'],
-    where: { quizId: id },
+    where: { quizId },
     _sum: {
       viewed: true,
     },
   });
   const favorites = await prisma.interactions.groupBy({
     by: ['quizId'],
-    where: { quizId: id, favorited: true },
+    where: { quizId, favorited: true },
     _count: {
       favorited: true,
     },
@@ -46,8 +46,7 @@ export async function getQuizById(
   };
 
   const quiz = await prisma.quiz.findUnique({
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    where: { id, authorId: withCorrect ? userId! : undefined },
+    where: { id: quizId, authorId: withCorrect ? userId : undefined },
     select: {
       id: true,
       title: true,
@@ -97,18 +96,11 @@ export async function getQuizById(
     };
   }
 
-  // -----------------
-  // UPDATE VIEW COUNT
-  // -----------------
+  // --- Update view count ---
   const interactions = await prisma.interactions.findFirst({
     where: { quizId: quiz.id, userId },
     select: { id: true, viewed: true, viewedAt: true, favorited: true },
   });
-
-  let timeBetweenViewed;
-  if (interactions?.viewedAt) {
-    timeBetweenViewed = Date.now() - interactions.viewedAt.getTime();
-  }
 
   if (!interactions) {
     await prisma.interactions.create({
@@ -128,14 +120,17 @@ export async function getQuizById(
       },
     };
   }
+  const { id, viewedAt, favorited } = interactions;
+
+  let timeBetweenViewed;
+  if (viewedAt) {
+    timeBetweenViewed = Date.now() - viewedAt.getTime();
+  }
 
   if (timeBetweenViewed && timeBetweenViewed > 5000) {
-    let viewCount = interactions.viewed;
-    viewCount++;
-
     await prisma.interactions.update({
-      where: { id: interactions.id },
-      data: { viewed: viewCount++, viewedAt: new Date() },
+      where: { id },
+      data: { viewed: { increment: 1 }, viewedAt: new Date() },
     });
   }
 
@@ -143,7 +138,7 @@ export async function getQuizById(
     status: 200,
     result: {
       ...result,
-      favorited: interactions.favorited,
+      favorited,
     },
   };
 }
