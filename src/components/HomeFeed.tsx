@@ -1,22 +1,42 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from '~/styles/HomeFeed.module.css';
+import { TQuizWithInteractions } from '~/types/quiz';
 import Loader from './Loader';
 import QuizCard from './QuizCard';
 
-const HomeFeed = ({ result, title }: { result: any; title: string }) => {
+type TResult =
+  | {
+      status: number;
+      result: TQuizWithInteractions[];
+      cursor: {
+        prev: string | null;
+        next: string | null;
+      };
+    }
+  | undefined;
+
+type Props = {
+  result: TResult;
+  loading: boolean;
+  title: string;
+};
+
+const HomeFeed = ({ result, loading, title }: Props) => {
+  const quizzes = result?.result;
+
   return (
     <section className={styles.container}>
       <h2 className={title === 'Recent' ? styles.recent : ''}>{title}</h2>
       <div
         className={styles.items}
-        style={{ height: result.isFetching ? '250px' : 'auto' }}
+        style={{ height: loading ? '250px' : 'auto' }}
       >
-        {result.isFetching ? (
+        {loading ? (
           <Loader />
         ) : (
           <>
-            {result.data?.result.map((item: any) => (
+            {quizzes?.map((item: any) => (
               <QuizCard
                 key={item.id}
                 id={item.id}
@@ -26,12 +46,14 @@ const HomeFeed = ({ result, title }: { result: any; title: string }) => {
                 favorited={item.interactions && item.interactions[0]?.favorited}
               />
             ))}
-            <button className={styles.browseBtn}>
-              <Link href="/browse">See more</Link>
-            </button>
+            {quizzes?.length === 6 && (
+              <button className={styles.browseBtn}>
+                <Link href="/browse">See more</Link>
+              </button>
+            )}
           </>
         )}
-        {!result.isFetching && !result.data.result.length && (
+        {!loading && !quizzes?.length && (
           <div className={styles.noResults}>
             <Image
               src="/images/empty.svg"

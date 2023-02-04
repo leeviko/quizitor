@@ -23,7 +23,11 @@ const Home = () => {
             {status === 'authenticated' ? (
               <>
                 <AuthHeader username={data.user.name} />
-                <HomeFeed result={result} title="Recent" />
+                <HomeFeed
+                  result={result.data}
+                  loading={result.isFetching}
+                  title="Recent"
+                />
               </>
             ) : (
               <Header />
