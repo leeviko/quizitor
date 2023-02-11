@@ -10,29 +10,31 @@ datasource db {
 
 model User {
   id            String      @id @default(uuid())
-  name          String      @unique @db.VarChar(30)
+  name          String      @unique @db.VarChar(25)
   password      String
   role          Role        @default(USER)
   createdAt     DateTime    @default(now())
   quizzes       Quiz[]
   interactions  Interactions[]
+  scores        Scores[]
 }
 
 model Quiz {
   id            String      @id @default(uuid())
-  title         String      @db.VarChar(50)
+  title         String      @db.VarChar(40)
   authorId      String
   private       Boolean     @default(true)
   createdAt     DateTime    @unique @default(now())
   updatedAt     DateTime    @updatedAt
-  questions     Questions[]
   author        User        @relation(fields: [authorId], references: [id])
+  questions     Questions[]
   interactions  Interactions[]
+  scores        Scores[]
 }
 
 model Questions {
   id            String      @id @default(uuid())
-  title         String      @db.VarChar(50)
+  title         String      @db.VarChar(40)
   quizId        String
   quiz          Quiz        @relation(fields: [quizId], references: [id])
   correct       Int
@@ -48,6 +50,19 @@ model Interactions {
   favorited     Boolean     @default(false)
   viewed        Int         @default(0)
   viewedAt      DateTime?    
+}
+
+model Scores {
+  id            String      @id @default(uuid())
+  quizId        String      
+  quiz          Quiz        @relation(fields: [quizId], references: [id])
+  userId        String      
+  user          User        @relation(fields: [userId], references: [id])
+  best          Int
+  recent        Int
+  tries         Int
+  createdAt     DateTime    @unique @default(now())
+  updatedAt     DateTime    @unique @updatedAt @default(now())
 }
 
 enum Role {

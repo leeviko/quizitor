@@ -18,8 +18,8 @@
   - [x] Make favorite
   - [x] Edit
   - [x] Delete
+- [x] Save quiz score
 - [ ] Search quizzes
-- [ ] Save quiz score
 - [ ] ...
 
 ## Docker

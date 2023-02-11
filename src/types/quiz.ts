@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
 export const quizInputSchema = z.object({
-  title: z.string().min(3).max(50),
+  title: z.string().min(3).max(40),
   private: z.boolean(),
   questions: z
     .array(
       z.object({
-        title: z.string().min(3).max(50),
+        title: z.string().min(3).max(40),
         correct: z.number(),
         choices: z.array(z.string()).min(2).max(4),
       }),
@@ -18,13 +18,13 @@ export type TQuizInput = z.infer<typeof quizInputSchema>;
 
 export const quizUpdateSchema = z.object({
   id: z.string(),
-  title: z.string().min(3).max(50),
+  title: z.string().min(3).max(40),
   private: z.boolean(),
   questions: z
     .array(
       z.object({
         quizId: z.string(),
-        title: z.string().min(3).max(50),
+        title: z.string().min(3).max(40),
         correct: z.number(),
         choices: z.array(z.string()).min(2).max(4),
       }),
@@ -116,3 +116,22 @@ export type TQuizWithStats = {
     favorites: number;
   };
 };
+
+export const finishQuizSchema = z.object({
+  quizId: z.string(),
+  answers: z.array(
+    z.object({
+      id: z.string(),
+      selected: z.number(),
+    }),
+  ),
+});
+export type TAnswers = z.infer<typeof finishQuizSchema>;
+
+export const quizScoresSchema = z.object({
+  quizId: z.string(),
+  limit: z.number().max(20).default(10),
+  cursor: z.date().nullish(),
+  page: z.string(),
+});
+export type TQuizScoresInput = z.infer<typeof quizScoresSchema>;

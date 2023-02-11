@@ -79,61 +79,6 @@
   padding: 0 1rem;
 }
 
-.gridItems .item {
-  margin-bottom: 0.5rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.item div {
-  display: flex;
-}
-
-.item .column {
-  display: flex;
-  align-items: center;
-}
-
-.item .text {
-  padding: 0.2rem;
-  width: 100%;
-}
-
-.item .number {
-  width: 20px;
-  color: rgba(255, 255, 255, 0.5);
-  position: relative;
-  margin-left: -0.8rem;
-}
-
-.item .question {
-  background-color: var(--accent-0-5);
-  border: 2px solid var(--accent);
-  border-right: none;
-}
-
-.item .answer {
-  border: 2px solid var(--accent);
-  border-left: none;
-}
-
-.item button {
-  cursor: pointer;
-  border: none;
-  background: none;
-}
-
-.item button:first-child {
-  margin: 0 0.5rem;
-}
-
-.item button img {
-  opacity: 0.8;
-}
-.item button:hover img {
-  opacity: 1;
-}
-
 .newBtn {
   width: 65px;
   margin: 0.5rem 0;

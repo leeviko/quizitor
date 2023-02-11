@@ -25,16 +25,9 @@ export function isTRPCClientError(
 }
 
 export interface SSRContext extends NextPageContext {
-  /**
-   * Set HTTP Status code
-   */
   status?: number;
 }
 
-/**
- * A set of strongly-typed React hooks from your `AppRouter` type signature with `createReactQueryHooks`.
- * @link https://trpc.io/docs/react#3-create-trpc-hooks
- */
 export const trpc = createTRPCNext<AppRouter, SSRContext>({
   config({ ctx }) {
     return {
@@ -57,6 +50,7 @@ export const trpc = createTRPCNext<AppRouter, SSRContext>({
               // This is so you can pass through things like cookies when we're server-side rendering
 
               // If you're using Node 18, omit the "connection" header
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const { connection: _connection, ...headers } = ctx.req.headers;
               return {
                 ...headers,

@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Mode, TEditQuestion, TQuestion } from '~/components/ModifyQuiz';
 
 import styles from '~/styles/QuizPage.module.css';
-import { EditChoice } from './Choice';
+import Choice from './Choice';
 
 type Props = {
   setMode: Dispatch<SetStateAction<Mode>>;
@@ -104,9 +104,9 @@ const NewQuestion = ({
         />
       </div>
 
-      <div className={styles.choices}>
+      <div className={`${styles.choices} ${styles.edit}`}>
         {choices.map((item, i) => (
-          <EditChoice
+          <Choice
             key={i}
             index={i}
             choices={choices}
@@ -117,11 +117,17 @@ const NewQuestion = ({
         ))}
 
         <div className={styles.actions}>
-          <button className={styles.return} onClick={handleModeChange}>
+          <button
+            className={`${styles.return} ${styles.enabled}`}
+            onClick={handleModeChange}
+          >
             <Image src="/icons/back.svg" alt="Return" width={24} height={24} />
             <span>Return</span>
           </button>
-          <button onClick={handleAdd} className={styles.defaultBtn}>
+          <button
+            onClick={handleAdd}
+            className={`${styles.defaultBtn} ${styles.enabled}`}
+          >
             {editQue ? 'Update' : 'Add'}
           </button>
         </div>

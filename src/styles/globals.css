@@ -28,8 +28,10 @@
   --light-blue-rgb: 62, 180, 217;
   --light-blue-0-5: rgba(var(--light-blue-rgb), 0.5);
 
-  --green: rgb(52, 170, 47);
-  --green-hover: rgb(45, 149, 41);
+  --green: rgb(84, 217, 62);
+  --green-0-5: rgba(84, 217, 62, 0.5);
+  --green-0-2: rgba(84, 217, 62, 0.2);
+  --green-hover: rgb(74, 189, 54);
 
   --red: rgb(212, 43, 43);
   --red-rgb: 212, 43, 43;
@@ -44,6 +46,8 @@
   --pad: 3rem;
   --modal-pad: 2rem 5rem;
   --margin: 0 5rem;
+
+  --default-btn-radius: 0.15rem;
 }
 
 body {
@@ -60,13 +64,13 @@ a {
 }
 
 .margin {
-  width: 55%;
+  width: 60%;
   max-width: 850px;
   margin: 0 auto;
 }
 
 .default .center {
-  width: 55%;
+  width: 60%;
   max-width: 850px;
   margin: 0 auto;
   position: relative;

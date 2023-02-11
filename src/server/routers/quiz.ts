@@ -6,6 +6,8 @@ import {
   offsetSchema,
   favoriteInputSchema,
   quizUpdateSchema,
+  finishQuizSchema,
+  quizScoresSchema,
 } from '~/types/quiz';
 import {
   createQuiz,
@@ -18,6 +20,8 @@ import {
   updateQuiz,
   deleteQuiz,
   getUserQuizzes,
+  finishQuiz,
+  getQuizScores,
 } from '../functions/quiz';
 
 export const quizRouter = router({
@@ -82,5 +86,17 @@ export const quizRouter = router({
     .input(offsetSchema)
     .query(async ({ input, ctx }) => {
       return getFavoriteQuizzes(input, ctx.session.user.id);
+    }),
+
+  finishQuiz: protectedProcedure
+    .input(finishQuizSchema)
+    .mutation(async ({ input, ctx }) => {
+      return finishQuiz(input, ctx.session.user);
+    }),
+
+  quizScores: publicProcedure
+    .input(quizScoresSchema)
+    .query(async ({ input }) => {
+      return getQuizScores(input);
     }),
 });

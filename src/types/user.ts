@@ -2,8 +2,8 @@ import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 export const userInputSchema = z.object({
-  name: z.string().min(3).max(30),
-  password: z.string().min(4),
+  name: z.string().min(3).max(25).trim(),
+  password: z.string().min(4).trim(),
 });
 
 export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({

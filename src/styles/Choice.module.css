@@ -1,4 +1,60 @@
-.choiceTitle {
+.choice {
+  transition: 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 0.75rem 0;
+  padding: 1.5rem;
+  height: 30px;
+  width: 100%;
+  border-radius: var(--default-btn-radius);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.choice.active {
+  background-color: var(--accent);
+}
+
+.choice.unactive {
+  background-color: var(--accent-0-25);
+}
+
+.choice.unactive.notEmpty:hover {
+  background-color: var(--accent-0-5);
+}
+
+.choiceContainer {
+  display: flex;
+  align-items: center;
+}
+
+.choiceCharacter {
+  position: absolute;
+  left: 10%;
+  border: 2px solid black;
+  width: 25px;
+  height: 25px;
+  border-radius: 5rem;
+}
+.choiceCharacter span {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.choice input {
+  border: none;
+  border-radius: var(--default-btn-radius);
+  font-family: inherit;
+  width: 50%;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  padding: 0.25rem;
+}
+
+/* .choiceTitle {
   color: var(--text);
 }
 
@@ -73,4 +129,4 @@
 
 .correctContainer img {
   margin: -2px 0 0 -2px;
-}
+} */

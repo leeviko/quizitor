@@ -2,9 +2,11 @@ import { prisma } from '~/server/prisma';
 import { TRPCError } from '@trpc/server';
 import {
   defaultQuizSelect,
+  TAnswers,
   TCursorInput,
   TOffsetInput,
   TQuizInput,
+  TQuizScoresInput,
   TQuizUpdateInput,
   TQuizWithInteractions,
   TQuizWithStats,
@@ -507,5 +509,123 @@ export async function getUserRecent(data: TOffsetInput, user: User) {
   return {
     status: 200,
     result,
+  };
+}
+
+// ----------------
+// Get user recent
+// ----------------
+export async function finishQuiz(data: TAnswers, user: User) {
+  const { id: userId } = user;
+  const { answers, quizId } = data;
+
+  const questions = await prisma.questions.findMany({
+    where: { id: { in: answers.map(({ id }) => id) }, quizId },
+  });
+
+  if (answers.length !== questions.length) {
+    throw new TRPCError({
+      code: 'BAD_REQUEST',
+      message: 'Something went wrong',
+    });
+  }
+
+  const maxScore = answers.length;
+  let score = maxScore;
+
+  const result = [];
+  let question;
+
+  for (let i = 0; i < maxScore; i++) {
+    const que = questions[i];
+    const answer = answers[i];
+    if (answer?.selected !== que?.correct) {
+      score--;
+    }
+
+    if (que && answer) {
+      question = {
+        ...que,
+        correct: answer.selected === que.correct,
+        selectedIndex: answer.selected,
+      };
+      result.push(question);
+    }
+  }
+
+  const exists = await prisma.scores.findFirst({
+    where: { quizId, userId },
+    select: { id: true, best: true },
+  });
+
+  const scoreResult = await prisma.scores.upsert({
+    where: { id: exists?.id ?? '0' },
+    create: {
+      quizId,
+      userId,
+      best: score,
+      recent: score,
+      tries: 1,
+    },
+    update: {
+      best: score > (exists?.best ?? 0) ? score : undefined,
+      recent: score,
+      tries: { increment: 1 },
+    },
+  });
+
+  return { score: scoreResult, result };
+}
+
+// ----------------
+// Get user recent
+// ----------------
+export async function getQuizScores(data: TQuizScoresInput) {
+  const { quizId, cursor, limit, page } = data;
+
+  if (cursor === null) {
+    return;
+  }
+
+  const result = await prisma.scores.findMany({
+    take: page === 'next' ? limit : -limit,
+    skip: cursor ? 1 : 0,
+    // cursor: undefined,
+    orderBy: {
+      updatedAt: 'desc',
+    },
+    where: {
+      quizId,
+      updatedAt: cursor
+        ? page === 'prev'
+          ? { gte: cursor }
+          : { lte: cursor }
+        : undefined,
+    },
+    select: {
+      id: true,
+      best: true,
+      recent: true,
+      user: {
+        select: {
+          name: true,
+        },
+      },
+      updatedAt: true,
+      createdAt: true,
+    },
+  });
+
+  let nextCursor;
+  if (result.length === limit) {
+    const lastScore = result[result.length - 1];
+    nextCursor = lastScore?.updatedAt;
+  } else {
+    nextCursor = null;
+  }
+
+  return {
+    result,
+    cursor: { prev: cursor || null, next: nextCursor || null },
   };
 }
