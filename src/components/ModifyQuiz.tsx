@@ -117,6 +117,7 @@ const ModifyQuiz = ({ quiz, deleteQuiz, mutateAsync, isLoading }: Props) => {
           <>
             <QuizOverview
               deleteQuiz={deleteQuiz}
+              edit={edit}
               setMode={setMode}
               setTitle={setTitle}
               setIsPrivate={setIsPrivate}

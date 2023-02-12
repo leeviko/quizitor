@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Mode, TEditQuestion, TQuestion } from '~/components/ModifyQuiz';
 
 import styles from '~/styles/QuizPage.module.css';
+import common from '~/styles/Common.module.css';
 import Choice from './Choice';
 
 type Props = {
@@ -126,7 +127,7 @@ const NewQuestion = ({
           </button>
           <button
             onClick={handleAdd}
-            className={`${styles.defaultBtn} ${styles.enabled}`}
+            className={`${common.defaultBtn} ${common.enabled}`}
           >
             {editQue ? 'Update' : 'Add'}
           </button>

@@ -9,6 +9,7 @@ import { TQuizWithStats } from '~/types/quiz';
 import { trpc } from '~/utils/trpc';
 
 import styles from '~/styles/QuizPage.module.css';
+import common from '~/styles/Common.module.css';
 import LoaderInline from '~/components/LoaderInline';
 import { Session } from 'next-auth';
 import QuizItem from '~/components/QuizItem';
@@ -68,7 +69,7 @@ const StartQuiz = ({ title, questionCount, setMode }: StartQuizProps) => {
         {questionCount} <span>Questions</span>
       </p>
       <button
-        className={`${styles.defaultBtn} ${styles.enabled}`}
+        className={`${common.defaultBtn} ${common.enabled}`}
         onClick={() => setMode('question')}
       >
         Start
@@ -121,7 +122,7 @@ const Question = ({
             Previous
           </button>
           <button
-            className={`${styles.defaultBtn} ${styles.enabled}`}
+            className={`${common.defaultBtn} ${common.enabled}`}
             onClick={() => handleQuestionChange(last ? 'finish' : 'next')}
           >
             {summaryLoading ? (
@@ -155,12 +156,12 @@ const FinishQuiz = ({ score, tries, bestScore, setMode }: FinishQuizProps) => {
         </div>
       </div>
       <div className={styles.summaryActions}>
-        <button className={`${styles.defaultBtn} ${styles.enabled}`}>
+        <button className={`${common.defaultBtn} ${common.enabled}`}>
           <Link href="/">Home</Link>
         </button>
         <button
           onClick={() => setMode('start')}
-          className={`${styles.defaultBtn} ${styles.enabled}`}
+          className={`${common.defaultBtn} ${common.enabled}`}
         >
           Play again
         </button>
@@ -198,7 +199,7 @@ const RecentScores = ({
   questionCount: number;
 }) => {
   const usernameLength = 20;
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     trpc.quiz.quizScores.useInfiniteQuery(
       {
         quizId,
@@ -250,37 +251,44 @@ const RecentScores = ({
   };
   return (
     <div className={styles.scoreTableContainer}>
-      <table className={styles.scoreTable}>
-        <thead>
-          <tr>
-            <th style={{ textAlign: 'left' }}>Username</th>
-            <th>Score</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data?.pages.map((group) =>
-            group?.result.map((item) => (
-              <tr key={item.id}>
-                <td>
-                  {item.user.name.slice(0, usernameLength)}
-                  {item.user.name.length > usernameLength && '...'}
-                </td>
-                <td>
-                  {item.recent}/{questionCount}
-                </td>
-                <td>{prettifyDate(item.updatedAt.getTime())}</td>
-              </tr>
-            )),
-          )}
-        </tbody>
-      </table>
+      {!isLoading && !data?.pages[0]?.result.length ? (
+        <div className={styles.noResults}>
+          <Image src="/images/empty.svg" alt="Empty" width={144} height={144} />
+          <span>Nobody has completed the quiz.</span>
+        </div>
+      ) : (
+        <table className={styles.scoreTable}>
+          <thead>
+            <tr>
+              <th style={{ textAlign: 'left' }}>Username</th>
+              <th>Score</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data?.pages.map((group) =>
+              group?.result.map((item) => (
+                <tr key={item.id}>
+                  <td>
+                    {item.user.name.slice(0, usernameLength)}
+                    {item.user.name.length > usernameLength && '...'}
+                  </td>
+                  <td>
+                    {item.recent}/{questionCount}
+                  </td>
+                  <td>{prettifyDate(item.updatedAt.getTime())}</td>
+                </tr>
+              )),
+            )}
+          </tbody>
+        </table>
+      )}
       <div className={styles.bottomBtn}>
         {hasNextPage && (
           <button
             onClick={handleFetch}
-            className={`${styles.defaultBtn} ${
-              hasNextPage ? styles.enabled : styles.disabled
+            className={`${common.defaultBtn} ${
+              hasNextPage ? common.enabled : common.disabled
             }`}
           >
             {isFetchingNextPage ? <LoaderInline /> : 'Load more'}
@@ -362,8 +370,8 @@ const Quiz = () => {
       if (quiz) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const answers = newQues.map(({ title, choices, ...rest }) => rest);
-        // finishQuiz();
-        await finishQuiz({ answers, quizId: quiz?.id });
+
+        await finishQuiz({ answers, quizId: quiz.id });
         setMode('finish');
       }
       return;

@@ -29,41 +29,8 @@ header.loggedIn {
   margin-top: 1rem;
 }
 
-.defaultBtn {
-  transition: 0.15s;
-  color: rgba(0, 0, 0, 0.8);
-  font-family: inherit;
-  background-color: var(--accent);
-  border: 2px solid var(--accent);
-  border-radius: 0.25rem;
-  padding: 0.25rem 0.5rem;
-}
-
-.defaultBtn a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.defaultBtn:hover,
-.defaultBtn.outline:hover {
-  cursor: pointer;
-  border-color: var(--accent-hover);
-  background-color: var(--accent-hover);
-}
-
-.defaultBtn:active {
-  transition: 0.05s;
-  outline: 2px solid var(--accent-hover);
-  outline-offset: 2px;
-}
-
-.defaultBtn:first-child {
+.actions button:first-child {
   margin-right: 1rem;
-}
-
-.defaultBtn.outline {
-  background: none;
-  color: var(--text);
 }
 
 @media screen and (max-width: 775px) {

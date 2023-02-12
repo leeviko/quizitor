@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import common from '~/styles/Common.module.css';
 import styles from '~/styles/Header.module.css';
 
 export const Header = () => {
@@ -10,10 +11,12 @@ export const Header = () => {
           <span>learning</span>
         </p>
         <div className={styles.actions}>
-          <button className={`${styles.defaultBtn} ${styles.outline}`}>
+          <button
+            className={`${common.defaultBtn} ${common.enabled} ${common.outline}`}
+          >
             Browse
           </button>
-          <button className={styles.defaultBtn}>
+          <button className={`${common.defaultBtn} ${common.enabled}`}>
             <Link href="/auth/sign-up">Get Started</Link>
           </button>
         </div>
@@ -30,10 +33,12 @@ export const AuthHeader = ({ username }: { username: string }) => {
           Hello, <span>{username}</span>! What would you like to do?
         </p>
         <div className={styles.actions}>
-          <button className={`${styles.defaultBtn} ${styles.outline}`}>
+          <button
+            className={`${common.defaultBtn} ${common.enabled} ${common.outline}`}
+          >
             Browse
           </button>
-          <button className={styles.defaultBtn}>
+          <button className={`${common.defaultBtn} ${common.enabled}`}>
             <Link href="/create-quiz">Create Quizzes</Link>
           </button>
         </div>

@@ -14,7 +14,7 @@
 - [x] View public quizzes
 - [x] Track quiz views
 - [x] Create quizzes
-  - [x] Public/private
+  - [x] Make Public/private
   - [x] Make favorite
   - [x] Edit
   - [x] Delete
@@ -33,4 +33,4 @@ docker run -p 3000:3000 -p 5432:5432 -e DATABASE_URL="postgres://username:passwo
 
 ## Database diagram
 
-![Db diagram](db_diagram.png)
+![Db diagram](diagram.png)

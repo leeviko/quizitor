@@ -1,11 +1,14 @@
 import Image from 'next/image';
-import styles from '~/styles/QuizOverview.module.css';
 import QuizItem from '~/components/QuizItem';
 import { Dispatch, SetStateAction } from 'react';
 import { Mode, TEditQuestion, TQuestion } from '~/components/ModifyQuiz';
 
+import styles from '~/styles/QuizOverview.module.css';
+import common from '~/styles/Common.module.css';
+
 type Props = {
   deleteQuiz?: () => void;
+  edit: boolean | undefined;
   setMode: Dispatch<SetStateAction<Mode>>;
   setTitle: Dispatch<SetStateAction<string>>;
   setIsPrivate: Dispatch<SetStateAction<boolean>>;
@@ -21,6 +24,7 @@ type Props = {
 
 const QuizOverview = ({
   deleteQuiz,
+  edit,
   setMode,
   setTitle,
   setIsPrivate,
@@ -78,7 +82,7 @@ const QuizOverview = ({
             ))}
           </div>
           <button
-            className={`${styles.defaultBtn} ${styles.newBtn}`}
+            className={`${common.defaultBtn} ${common.enabled} ${styles.newBtn}`}
             onClick={() => setMode(Mode.New)}
           >
             New
@@ -95,7 +99,7 @@ const QuizOverview = ({
             />
           </div>
           <button
-            className={`${styles.defaultBtn} ${styles.newBtn}`}
+            className={`${common.defaultBtn} ${common.enabled} ${styles.newBtn}`}
             onClick={() => setMode(Mode.New)}
           >
             Add a Question!
@@ -151,8 +155,11 @@ const QuizOverview = ({
               </>
             )}
           </button>
-          <button className={styles.defaultBtn} onClick={handleSave}>
-            Create
+          <button
+            className={`${common.defaultBtn} ${common.enabled}`}
+            onClick={handleSave}
+          >
+            {edit ? 'Update' : 'Create'}
           </button>
         </div>
       </div>
