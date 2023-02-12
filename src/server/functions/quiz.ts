@@ -174,9 +174,10 @@ export async function updateQuiz(data: TQuizUpdateInput, userId: string) {
     }),
     prisma.questions.deleteMany({ where: { quizId: id } }),
     prisma.questions.createMany({ data: questions }),
+    prisma.scores.deleteMany({ where: { quizId: id } }),
   ]);
 
-  if (result.length !== 3) {
+  if (result.length !== 4) {
     throw new TRPCError({
       message: 'Something went wrong while updating',
       code: 'INTERNAL_SERVER_ERROR',
@@ -513,7 +514,7 @@ export async function getUserRecent(data: TOffsetInput, user: User) {
 }
 
 // ----------------
-// Get user recent
+// Upload score to db
 // ----------------
 export async function finishQuiz(data: TAnswers, user: User) {
   const { id: userId } = user;
@@ -578,7 +579,7 @@ export async function finishQuiz(data: TAnswers, user: User) {
 }
 
 // ----------------
-// Get user recent
+// Get quiz scores
 // ----------------
 export async function getQuizScores(data: TQuizScoresInput) {
   const { quizId, cursor, limit, page } = data;

@@ -31,7 +31,10 @@
   --green: rgb(84, 217, 62);
   --green-0-5: rgba(84, 217, 62, 0.5);
   --green-0-2: rgba(84, 217, 62, 0.2);
+
   --green-hover: rgb(74, 189, 54);
+  --green-dark: rgb(62, 151, 46);
+  --green-dark-hover: rgb(54, 132, 41);
 
   --red: rgb(212, 43, 43);
   --red-rgb: 212, 43, 43;
@@ -39,6 +42,8 @@
   --red-0-2: rgba(var(--red-rgb), 0.2);
 
   --red-hover: rgb(184, 38, 38);
+  --red-dark: rgb(146, 33, 33);
+  --red-dark-hover: rgb(133, 30, 30);
 
   --white-filter: invert(94%) sepia(100%) saturate(0%) hue-rotate(265deg)
     brightness(104%) contrast(103%);

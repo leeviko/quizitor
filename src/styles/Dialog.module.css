@@ -30,18 +30,18 @@
 }
 
 .yesBtn {
-  background-color: var(--green);
+  background-color: var(--green-dark);
 }
 .yesBtn:hover {
-  background-color: var(--green-hover);
+  background-color: var(--green-dark-hover);
 }
 .noBtn {
-  background-color: var(--red);
+  background-color: var(--red-dark);
 }
 .noBtn:hover {
-  background-color: var(--red-hover);
+  background-color: var(--red-dark-hover);
 }
 
 .dialog button:first-child {
-  margin-right: 0.25rem;
+  margin-right: 0.5rem;
 }

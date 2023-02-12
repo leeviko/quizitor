@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import Loader from '~/components/Loader';
 import { TQuizWithStats } from '~/types/quiz';
 import { isTRPCClientError } from '~/utils/trpc';
+import Dialog, { TDialogContent } from './Dialog';
 
 export type TQuestion = {
   title: string;
@@ -39,6 +40,11 @@ const ModifyQuiz = ({ quiz, deleteQuiz, mutateAsync, isLoading }: Props) => {
   const [title, setTitle] = useState('');
   const [isPrivate, setIsPrivate] = useState(true);
   const [questions, setQuestions] = useState<Array<TQuestion>>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState<TDialogContent>({
+    title: '',
+    message: '',
+  });
 
   useEffect(() => {
     if (!quiz) return setEdit(false);
@@ -75,7 +81,7 @@ const ModifyQuiz = ({ quiz, deleteQuiz, mutateAsync, isLoading }: Props) => {
       questions,
     };
 
-    if (quiz) {
+    if (edit && quiz) {
       reqParams = {
         ...reqParams,
         questions: questions.map((que) => ({ ...que, quizId: quiz.id })),
@@ -97,6 +103,26 @@ const ModifyQuiz = ({ quiz, deleteQuiz, mutateAsync, isLoading }: Props) => {
     return router.push(`/quizzes/${result.result.id ?? quiz?.id}`);
   };
 
+  const closeDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const confirmSaveEdit = () => {
+    setDialogContent({
+      title: 'Save Edit',
+      message:
+        'Are you sure you want to edit the quiz? All scores will be reset!',
+      no: 'Cancel',
+      onConfirm() {
+        handleSave();
+      },
+      onClose() {
+        closeDialog();
+      },
+    });
+    setDialogOpen(true);
+  };
+
   return (
     <ModalLayout
       pageProps={{
@@ -111,6 +137,7 @@ const ModifyQuiz = ({ quiz, deleteQuiz, mutateAsync, isLoading }: Props) => {
       }}
     >
       <div style={{ display: 'flex', height: '100%' }}>
+        {dialogOpen && <Dialog {...dialogContent} />}
         {isLoading ? (
           <Loader />
         ) : (
@@ -127,7 +154,7 @@ const ModifyQuiz = ({ quiz, deleteQuiz, mutateAsync, isLoading }: Props) => {
               setQuestions={setQuestions}
               mode={mode}
               setEditQue={setEditQue}
-              handleSave={handleSave}
+              handleSave={edit ? confirmSaveEdit : handleSave}
               errors={errors}
             />
             <NewQuestion
