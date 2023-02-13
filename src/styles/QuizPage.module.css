@@ -451,3 +451,35 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
+
+@media screen and (max-width: 600px) {
+  .container {
+    width: 100%;
+  }
+  .mainTitle {
+    margin-left: 1rem;
+  }
+  .mainCard {
+    margin-left: 1rem;
+    width: 100%;
+  }
+  .bottomTitle {
+    margin-left: 1rem;
+  }
+  .bottomCard {
+    width: 100%;
+    min-width: auto;
+    margin: 0 1rem;
+  }
+  .bottom .rightCard {
+    display: none;
+  }
+  .question .rightCard {
+    display: none;
+    margin-right: 0;
+  }
+
+  .question .mainCard {
+    min-width: auto;
+  }
+}

@@ -390,7 +390,9 @@ const Quiz = () => {
 
   return (
     <div className={`${styles.container} ${styles[mode]}`}>
-      <h1>{mode === 'start' ? 'Start' : quiz?.title}</h1>
+      <h1 className={styles.mainTitle}>
+        {mode === 'start' ? 'Start' : quiz?.title}
+      </h1>
       <div className={styles.wrapper}>
         <div className={`${styles.mainCard} ${styles.card}`}>
           <div className={styles.cardWrapper}>
