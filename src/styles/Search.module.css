@@ -1,0 +1,113 @@
+.container {
+  color: var(--text);
+  width: 100%;
+}
+
+.inputField {
+  position: relative;
+  height: 50px;
+}
+
+.inputField input {
+  font-family: inherit;
+  padding: 1rem;
+  border-radius: var(--default-btn-radius);
+  width: 100%;
+  background-color: #6a757e;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.inputField > :is(input, button) {
+  height: 100%;
+  border: none;
+}
+
+.inputField > button {
+  background-color: var(--accent);
+  border-top-right-radius: var(--default-btn-radius);
+  border-bottom-right-radius: var(--default-btn-radius);
+  position: absolute;
+  width: 75px;
+  margin-left: -75px;
+}
+
+.inputField > button:hover {
+  background-color: var(--accent-hover);
+}
+.inputField > button:active {
+  background-color: var(--accent-hover-2);
+}
+
+.dropdown button {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.dropdown .selectBtn {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  width: 125px;
+  border: none;
+  font-family: inherit;
+  padding: 0.5rem;
+  background-color: var(--grey);
+  border-radius: var(--default-btn-radius);
+  margin-top: 0.5rem;
+  position: relative;
+}
+
+.selectBtn img {
+  position: absolute;
+  right: 1px;
+}
+
+.selectBtn:hover {
+  background-color: var(--grey-hover);
+}
+.selectBtn:active {
+  background-color: var(--grey-hover-2);
+}
+
+.dropdownOpts {
+  transition: 0.1s;
+  margin-top: 0.1rem;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+}
+
+.dropdownOpts.closed {
+  visibility: hidden;
+  opacity: 0;
+}
+.dropdownOpts.open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.dropdownOpts button {
+  border: none;
+  font-family: inherit;
+  background-color: #6a757e;
+  padding: 0.25rem;
+}
+
+.dropdownOpts button:hover {
+  background-color: var(--grey-hover);
+}
+.dropdownOpts button:active {
+  background-color: var(--grey-hover-2);
+}
+
+.dropdownOpts button.active {
+  background-color: var(--grey-hover-2);
+}
+
+.dropdownOpts button:first-child {
+  border-top-right-radius: var(--default-btn-radius);
+  border-top-left-radius: var(--default-btn-radius);
+}
+.dropdownOpts button:last-child {
+  border-bottom-right-radius: var(--default-btn-radius);
+  border-bottom-left-radius: var(--default-btn-radius);
+}

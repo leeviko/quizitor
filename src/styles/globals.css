@@ -12,6 +12,7 @@
   --accent-0-8: rgba(var(--accent-rgb), 0.8);
 
   --accent-hover: rgb(55, 136, 193);
+  --accent-hover-2: rgb(50, 123, 176);
 
   --bg: #24272a;
   --modal-bg: #26323f;
@@ -40,10 +41,14 @@
   --red-rgb: 212, 43, 43;
   --red-0-5: rgba(var(--red-rgb), 0.5);
   --red-0-2: rgba(var(--red-rgb), 0.2);
-
   --red-hover: rgb(184, 38, 38);
+
   --red-dark: rgb(146, 33, 33);
   --red-dark-hover: rgb(133, 30, 30);
+
+  --grey: #6a757e;
+  --grey-hover: #626d75;
+  --grey-hover-2: #5a646b;
 
   --white-filter: invert(94%) sepia(100%) saturate(0%) hue-rotate(265deg)
     brightness(104%) contrast(103%);
