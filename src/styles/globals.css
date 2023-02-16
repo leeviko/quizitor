@@ -52,6 +52,9 @@
 
   --white-filter: invert(94%) sepia(100%) saturate(0%) hue-rotate(265deg)
     brightness(104%) contrast(103%);
+  
+  --black-filter: filter: invert(0%) sepia(95%) saturate(20%) hue-rotate(354deg) 
+    brightness(98%) contrast(104%);
 
   --pad: 3rem;
   --modal-pad: 2rem 5rem;

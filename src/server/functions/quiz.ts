@@ -10,6 +10,7 @@ import {
   TQuizUpdateInput,
   TQuizWithInteractions,
   TQuizWithStats,
+  TSearchInput,
 } from '~/types/quiz';
 import { Session, User } from 'next-auth';
 
@@ -379,7 +380,7 @@ export async function getUserQuizzes(
 // sorted by views or num of favorites
 // ----------------
 export async function getQuizList(data: TOffsetInput, session: Session | null) {
-  const { skip, limit, sortBy } = data;
+  const { currPage, limit, sortBy } = data;
   let userId = null;
   let quizSelect: any = defaultQuizSelect;
   if (session) {
@@ -398,7 +399,7 @@ export async function getQuizList(data: TOffsetInput, session: Session | null) {
   }
 
   const statsResult = await prisma.interactions.groupBy({
-    skip,
+    skip: currPage,
     take: limit,
     orderBy: { quizId: 'desc' },
     by: ['quizId'],
@@ -461,10 +462,10 @@ export async function getQuizList(data: TOffsetInput, session: Session | null) {
 // Get favorited quizzes
 // ----------------
 export async function getFavoriteQuizzes(data: TOffsetInput, userId: string) {
-  const { skip, limit } = data;
+  const { currPage, limit } = data;
 
   const result = await prisma.interactions.findMany({
-    skip,
+    skip: currPage,
     take: limit,
     where: {
       AND: [{ userId }, { favorited: true }, { quiz: { private: false } }],
@@ -487,11 +488,11 @@ export async function getFavoriteQuizzes(data: TOffsetInput, userId: string) {
 // Get user recent
 // ----------------
 export async function getUserRecent(data: TOffsetInput, user: User) {
-  const { skip, limit } = data;
+  const { currPage, limit } = data;
   const { id: userId } = user;
 
   const result = await prisma.interactions.findMany({
-    skip,
+    skip: currPage,
     take: limit,
     where: {
       userId,
@@ -628,5 +629,46 @@ export async function getQuizScores(data: TQuizScoresInput) {
   return {
     result,
     cursor: { prev: cursor || null, next: nextCursor || null },
+  };
+}
+
+export async function searchQuizzes(data: TSearchInput) {
+  const { limit, currPage, query } = data;
+
+  const totalCount = await prisma.quiz.count({
+    where: {
+      title: {
+        search: `*${query.replace(/[\s\n\t]/g, '_')}*`, // Replace spaces with underscore
+      },
+    },
+  });
+
+  const numOfPages = Math.ceil(totalCount / limit);
+
+  const result: TQuizWithInteractions[] = await prisma.quiz.findMany({
+    skip: currPage * limit,
+    take: limit,
+    where: {
+      title: {
+        search: `*${query.replace(/[\s\n\t]/g, '_')}*`, // Replace spaces with underscore
+      },
+    },
+    select: defaultQuizSelect,
+    orderBy: {
+      // Order by query relevance.
+      _relevance: {
+        fields: ['title'],
+        search: query,
+        sort: 'desc',
+      },
+    },
+  });
+
+  return {
+    result,
+    pagination: {
+      currPage,
+      numOfPages,
+    },
   };
 }

@@ -14,7 +14,7 @@ export const Header = () => {
           <button
             className={`${common.defaultBtn} ${common.enabled} ${common.outline}`}
           >
-            Browse
+            <Link href="/search">Browse</Link>
           </button>
           <button className={`${common.defaultBtn} ${common.enabled}`}>
             <Link href="/auth/sign-up">Get Started</Link>
@@ -36,7 +36,7 @@ export const AuthHeader = ({ username }: { username: string }) => {
           <button
             className={`${common.defaultBtn} ${common.enabled} ${common.outline}`}
           >
-            Browse
+            <Link href="/search">Browse</Link>
           </button>
           <button className={`${common.defaultBtn} ${common.enabled}`}>
             <Link href="/create-quiz">Create Quizzes</Link>

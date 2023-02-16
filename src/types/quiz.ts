@@ -39,7 +39,7 @@ export const favoriteInputSchema = z.object({
 });
 
 export const offsetSchema = z.object({
-  skip: z.number().default(0),
+  currPage: z.number().default(0),
   limit: z.number().max(20).default(10),
   sortBy: z.string(),
 });
@@ -135,3 +135,19 @@ export const quizScoresSchema = z.object({
   page: z.string(),
 });
 export type TQuizScoresInput = z.infer<typeof quizScoresSchema>;
+
+export const searchSchema = offsetSchema
+  .extend({
+    query: z.string().min(3),
+    sort: z.string(),
+  })
+  .omit({ sortBy: true });
+export type TSearchInput = z.infer<typeof searchSchema>;
+
+export enum Sort {
+  best = 'Relevance',
+  latest = 'Latest',
+  oldest = 'Oldest',
+  mostViewed = 'Most viewed',
+  leastViewed = 'Least viewed',
+}

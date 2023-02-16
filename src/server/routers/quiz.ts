@@ -8,6 +8,7 @@ import {
   quizUpdateSchema,
   finishQuizSchema,
   quizScoresSchema,
+  searchSchema,
 } from '~/types/quiz';
 import {
   createQuiz,
@@ -22,6 +23,7 @@ import {
   getUserQuizzes,
   finishQuiz,
   getQuizScores,
+  searchQuizzes,
 } from '../functions/quiz';
 
 export const quizRouter = router({
@@ -99,4 +101,8 @@ export const quizRouter = router({
     .query(async ({ input }) => {
       return getQuizScores(input);
     }),
+
+  search: publicProcedure.input(searchSchema).query(async ({ input }) => {
+    return searchQuizzes(input);
+  }),
 });
