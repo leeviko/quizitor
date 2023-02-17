@@ -632,13 +632,33 @@ export async function getQuizScores(data: TQuizScoresInput) {
   };
 }
 
-export async function searchQuizzes(data: TSearchInput) {
+export async function searchQuizzes(
+  data: TSearchInput,
+  session: Session | null,
+) {
   const { limit, currPage, query } = data;
+  let userId = null;
+  let quizSelectWithInteractions;
+  if (session) {
+    userId = session.user.id;
+    quizSelectWithInteractions = {
+      ...defaultQuizSelect,
+      interactions: {
+        where: { userId },
+        select: {
+          favorited: true,
+        },
+      },
+    };
+  }
+  // Replace spaces with underscore
+  const searchQuery = query.replace(/[\s\n\t]/g, '_');
 
+  // Get total count of quizzes
   const totalCount = await prisma.quiz.count({
     where: {
       title: {
-        search: `*${query.replace(/[\s\n\t]/g, '_')}*`, // Replace spaces with underscore
+        search: `*${searchQuery}*`,
       },
     },
   });
@@ -650,10 +670,10 @@ export async function searchQuizzes(data: TSearchInput) {
     take: limit,
     where: {
       title: {
-        search: `*${query.replace(/[\s\n\t]/g, '_')}*`, // Replace spaces with underscore
+        search: `*${searchQuery}*`,
       },
     },
-    select: defaultQuizSelect,
+    select: quizSelectWithInteractions ?? defaultQuizSelect,
     orderBy: {
       // Order by query relevance.
       _relevance: {

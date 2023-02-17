@@ -102,7 +102,7 @@ export const quizRouter = router({
       return getQuizScores(input);
     }),
 
-  search: publicProcedure.input(searchSchema).query(async ({ input }) => {
-    return searchQuizzes(input);
+  search: publicProcedure.input(searchSchema).query(async ({ input, ctx }) => {
+    return searchQuizzes(input, ctx.session);
   }),
 });
