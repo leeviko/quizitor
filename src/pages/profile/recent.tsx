@@ -7,7 +7,7 @@ import styles from '~/styles/ProfileCards.module.css';
 const ProfileRecent = () => {
   const result = trpc.quiz.userRecent.useQuery({
     limit: 10,
-    skip: 0,
+    currPage: 0,
     sortBy: '',
   });
 

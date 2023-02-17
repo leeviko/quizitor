@@ -13,6 +13,8 @@ import common from '~/styles/Common.module.css';
 import LoaderInline from '~/components/LoaderInline';
 import { Session } from 'next-auth';
 import QuizItem from '~/components/QuizItem';
+import prettifyDate from '~/utils/prettifyDate';
+import Loader from '~/components/Loader';
 
 type TQuestion = {
   id: string;
@@ -209,41 +211,6 @@ const RecentScores = ({
       { getNextPageParam: (lastPage) => lastPage?.cursor.next },
     );
 
-  const prettifyDate = (date: number) => {
-    const now = new Date().getTime();
-    const diffSeconds = (now - date) / 1000;
-    const diffMinutes = diffSeconds / 60;
-    const diffHours = diffMinutes / 60;
-    const diffDays = diffHours / 24;
-    const diffYears = diffDays / 365;
-
-    if (diffSeconds < 60) {
-      return 'now';
-    }
-    if (diffMinutes < 60) {
-      return `${Math.round(diffMinutes)} minute${
-        Math.round(diffMinutes) > 1 ? 's' : ''
-      } ago`;
-    }
-    if (diffHours < 24) {
-      return `${Math.round(diffHours)} hour${
-        Math.round(diffHours) >= 2 ? 's' : ''
-      } ago`;
-    }
-    if (diffHours >= 24) {
-      return `${Math.round(diffDays)} day${
-        Math.round(diffDays) >= 2 ? 's' : ''
-      } ago`;
-    }
-    if (diffYears >= 1) {
-      return `${Math.round(diffYears)} year${
-        Math.round(diffYears) >= 2 ? 's' : ''
-      } ago`;
-    }
-
-    return 'undefined';
-  };
-
   const handleFetch = () => {
     if (hasNextPage) {
       fetchNextPage();
@@ -251,37 +218,48 @@ const RecentScores = ({
   };
   return (
     <div className={styles.scoreTableContainer}>
-      {!isLoading && !data?.pages[0]?.result.length ? (
-        <div className={styles.noResults}>
-          <Image src="/images/empty.svg" alt="Empty" width={144} height={144} />
-          <span>Nobody has completed the quiz.</span>
-        </div>
+      {!isLoading ? (
+        !data?.pages[0] || !data?.pages[0]?.result.length ? (
+          <div className={styles.noResults}>
+            <Image
+              src="/images/empty.svg"
+              alt="Empty"
+              width={144}
+              height={144}
+            />
+            <span>Nobody has completed the quiz.</span>
+          </div>
+        ) : (
+          <table className={styles.scoreTable}>
+            <thead>
+              <tr>
+                <th style={{ textAlign: 'left' }}>Username</th>
+                <th>Score</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data?.pages.map((group) =>
+                group?.result.map((item) => (
+                  <tr key={item.id}>
+                    <td>
+                      {item.user.name.slice(0, usernameLength)}
+                      {item.user.name.length > usernameLength && '...'}
+                    </td>
+                    <td>
+                      {item.recent}/{questionCount}
+                    </td>
+                    <td>{prettifyDate(item.updatedAt.getTime())}</td>
+                  </tr>
+                )),
+              )}
+            </tbody>
+          </table>
+        )
       ) : (
-        <table className={styles.scoreTable}>
-          <thead>
-            <tr>
-              <th style={{ textAlign: 'left' }}>Username</th>
-              <th>Score</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data?.pages.map((group) =>
-              group?.result.map((item) => (
-                <tr key={item.id}>
-                  <td>
-                    {item.user.name.slice(0, usernameLength)}
-                    {item.user.name.length > usernameLength && '...'}
-                  </td>
-                  <td>
-                    {item.recent}/{questionCount}
-                  </td>
-                  <td>{prettifyDate(item.updatedAt.getTime())}</td>
-                </tr>
-              )),
-            )}
-          </tbody>
-        </table>
+        <div className={styles.loaderContainer}>
+          <Loader />
+        </div>
       )}
       <div className={styles.bottomBtn}>
         {hasNextPage && (
@@ -456,6 +434,6 @@ const Quiz = () => {
   );
 };
 
-Quiz.auth = { role: 'USER' };
+Quiz.auth = { role: 'USER', loader: false };
 
 export default Quiz;

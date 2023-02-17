@@ -9,13 +9,12 @@ export interface AuthEnabledComponentConfig {
 export type ComponentWithAuth<PropsType = any> = React.FC<PropsType> &
   AuthEnabledComponentConfig;
 
-const Auth: any = ({
-  children,
-  opts,
-}: {
+type Props = {
   children: ReactNode;
-  opts: { role: 'USER' | 'ADMIN' };
-}) => {
+  opts: { role: 'USER' | 'ADMIN'; loader?: boolean };
+};
+
+const Auth: any = ({ children, opts: { loader = true, role } }: Props) => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const user = session?.user;
@@ -23,7 +22,7 @@ const Auth: any = ({
   useEffect(() => {
     if (status === 'loading') return;
     if (user) {
-      if (opts.role === 'ADMIN' && user.role !== 'ADMIN') {
+      if (role === 'ADMIN' && user.role !== 'ADMIN') {
         router.push('/');
       }
     }
@@ -32,14 +31,14 @@ const Auth: any = ({
   }, [user, status]);
 
   if (user) {
-    if (opts.role === 'ADMIN' && user.role !== 'ADMIN') {
+    if (role === 'ADMIN' && user.role !== 'ADMIN') {
       router.push('/');
       return;
     }
 
     return children;
   }
-  return <Loader fullscreen />;
+  if (loader) return <Loader fullscreen />;
 };
 
 export default Auth;

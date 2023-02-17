@@ -7,7 +7,7 @@ import styles from '~/styles/ProfileCards.module.css';
 const ProfileFavorites = () => {
   const result = trpc.quiz.favorites.useQuery({
     limit: 10,
-    skip: 0,
+    currPage: 0,
     sortBy: '',
   });
 
