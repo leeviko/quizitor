@@ -19,7 +19,8 @@
   - [x] Edit
   - [x] Delete
 - [x] Save quiz score
-- [ ] Search quizzes
+- [x] Search quizzes
+  - [ ] Sort
 - [ ] ...
 
 ## Docker

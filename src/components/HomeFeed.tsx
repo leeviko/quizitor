@@ -1,9 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import styles from '~/styles/HomeFeed.module.css';
 import { TQuizWithInteractions } from '~/types/quiz';
 import Loader from './Loader';
 import QuizCard from './QuizCard';
+
+import styles from '~/styles/HomeFeed.module.css';
+import common from '~/styles/Common.module.css';
 
 type TResult =
   | {
@@ -54,7 +56,7 @@ const HomeFeed = ({ result, loading, title }: Props) => {
           </>
         )}
         {!loading && !quizzes?.length && (
-          <div className={styles.noResults}>
+          <div className={common.noResults}>
             <Image
               src="/images/empty.svg"
               alt="Empty"

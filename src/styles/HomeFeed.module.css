@@ -14,24 +14,6 @@
   grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
 }
 
-.noResults {
-  padding-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  color: var(--text-grey);
-}
-
-.noResults span {
-  text-align: center;
-  font-size: 0.85rem;
-  margin-top: 0.25rem;
-}
-
-.noResults img {
-  opacity: 0.8;
-}
-
 .browseBtn {
   width: 125px;
   transition: 0.15s;

@@ -8,13 +8,14 @@ import Choice from '~/components/Choice';
 import { TQuizWithStats } from '~/types/quiz';
 import { trpc } from '~/utils/trpc';
 
-import styles from '~/styles/QuizPage.module.css';
-import common from '~/styles/Common.module.css';
 import LoaderInline from '~/components/LoaderInline';
 import { Session } from 'next-auth';
 import QuizItem from '~/components/QuizItem';
 import prettifyDate from '~/utils/prettifyDate';
 import Loader from '~/components/Loader';
+
+import styles from '~/styles/QuizPage.module.css';
+import common from '~/styles/Common.module.css';
 
 type TQuestion = {
   id: string;
@@ -220,7 +221,7 @@ const RecentScores = ({
     <div className={styles.scoreTableContainer}>
       {!isLoading ? (
         !data?.pages[0] || !data?.pages[0]?.result.length ? (
-          <div className={styles.noResults}>
+          <div className={common.noResults}>
             <Image
               src="/images/empty.svg"
               alt="Empty"

@@ -3,9 +3,11 @@ import { FormEvent, useEffect, useState } from 'react';
 import Loader from '~/components/Loader';
 import Pagination from '~/components/Pagination';
 import QuizCard from '~/components/QuizCard';
-import styles from '~/styles/Search.module.css';
 import { Sort, TQuizWithInteractions } from '~/types/quiz';
 import { trpc } from '~/utils/trpc';
+
+import styles from '~/styles/Search.module.css';
+import common from '~/styles/Common.module.css';
 
 type TPagination = {
   currPage: number;
@@ -63,7 +65,7 @@ const Search = () => {
   };
 
   const handlePagination = async (newPage: number) => {
-    if (!pagination) return;
+    if (!pagination || pagination.numOfPages === 0) return;
     // (newPage is off by one)
     if (newPage < 0 || newPage === pagination.numOfPages) return;
     setParams({
@@ -135,11 +137,19 @@ const Search = () => {
             ))
           )}
           {search.status === 'success' && !result?.length && (
-            <p>No results found </p>
+            <div className={common.noResults}>
+              <Image
+                src="/images/empty.svg"
+                alt="Empty"
+                width={144}
+                height={144}
+              />
+              <span>No quizzes found.</span>
+            </div>
           )}
         </div>
       </div>
-      {pagination && (
+      {pagination && pagination.numOfPages > 0 && (
         <Pagination {...pagination} handlePagination={handlePagination} />
       )}
     </div>

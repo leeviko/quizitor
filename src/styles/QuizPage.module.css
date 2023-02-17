@@ -356,24 +356,7 @@
 }
 
 /* SCORES */
-.noResults {
-  padding-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  color: var(--text-grey);
-}
 
-.noResults span {
-  text-align: center;
-  font-size: 0.85rem;
-  margin-top: 0.25rem;
-}
-
-.noResults img {
-  opacity: 0.8;
-  margin: auto;
-}
 .scoreTableContainer {
   padding-bottom: 1rem;
 }
