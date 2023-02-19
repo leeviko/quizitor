@@ -20,7 +20,7 @@
   - [x] Delete
 - [x] Save quiz score
 - [x] Search quizzes
-  - [ ] Sort
+  - [x] Sorting
 - [ ] ...
 
 ## Docker

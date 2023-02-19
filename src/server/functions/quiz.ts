@@ -2,6 +2,7 @@ import { prisma } from '~/server/prisma';
 import { TRPCError } from '@trpc/server';
 import {
   defaultQuizSelect,
+  Sort,
   TAnswers,
   TCursorInput,
   TOffsetInput,
@@ -636,8 +637,8 @@ export async function searchQuizzes(
   data: TSearchInput,
   session: Session | null,
 ) {
-  const { limit, currPage, query } = data;
-  let userId = null;
+  const { limit, currPage, query, sort } = data;
+  let userId;
   let quizSelectWithInteractions;
   if (session) {
     userId = session.user.id;
@@ -654,34 +655,89 @@ export async function searchQuizzes(
   // Replace spaces with underscore
   const searchQuery = query.replace(/[\s\n\t]/g, '_');
 
+  // --- Sorting ---
+  let orderBy: any;
+
+  if (sort === Sort.latest || sort === Sort.oldest) {
+    orderBy = {
+      createdAt: Sort.latest ? 'desc' : 'asc',
+    };
+  } else {
+    // Order by query relevance.
+    orderBy = {
+      _relevance: {
+        fields: ['title'],
+        search: query,
+        sort: 'desc',
+      },
+    };
+  }
+
   // Get total count of quizzes
   const totalCount = await prisma.quiz.count({
     where: {
       title: {
         search: `*${searchQuery}*`,
       },
+      private: false,
     },
   });
 
   const numOfPages = Math.ceil(totalCount / limit);
 
-  const result: TQuizWithInteractions[] = await prisma.quiz.findMany({
+  let result: TQuizWithInteractions[];
+  if (sort === Sort.mostViewed || sort === Sort.leastViewed) {
+    const offset = currPage * limit;
+    const orderBy = sort === Sort.mostViewed ? 'DESC' : 'ASC';
+
+    // --- Sort by views query ---
+    result = await prisma.$queryRawUnsafe(
+      `SELECT  SUM("Interactions"."viewed") AS views, "Interactions"."quizId" AS id, 
+                "Quiz"."title", "Quiz"."createdAt", "Quiz"."updatedAt",
+                json_build_object('id', "User"."id", 'name', "User"."name") AS author,
+                json_build_object('questions', "count"."questionCount") as _count
+      FROM "Interactions"
+        INNER JOIN "Quiz" ON "Interactions"."quizId" = "Quiz"."id"
+        LEFT JOIN (SELECT "Questions"."quizId", COUNT(*) 
+          AS "questionCount" FROM "Questions" 
+            GROUP BY "Questions"."quizId") 
+          AS "count" 
+          ON ("Quiz"."id" = "count"."quizId")
+        INNER JOIN "User" ON "Quiz"."authorId" = "User"."id" 
+      WHERE ("Quiz"."private" = false 
+        AND to_tsvector(concat_ws(' ', "Quiz"."title")) @@ to_tsquery($1))  
+      GROUP BY  "Interactions"."quizId", "Quiz"."title", "Quiz"."createdAt", 
+        "Quiz"."updatedAt", "User"."name", "User"."id",
+        "count"."questionCount"
+      ORDER BY views ${orderBy}
+      LIMIT  $2
+      OFFSET $3
+      `,
+      searchQuery,
+      limit,
+      offset,
+    );
+
+    return {
+      result,
+      pagination: {
+        currPage,
+        numOfPages,
+      },
+    };
+  }
+
+  result = await prisma.quiz.findMany({
     skip: currPage * limit,
     take: limit,
     where: {
       title: {
         search: `*${searchQuery}*`,
       },
+      private: false,
     },
     select: quizSelectWithInteractions ?? defaultQuizSelect,
-    orderBy: {
-      // Order by query relevance.
-      _relevance: {
-        fields: ['title'],
-        search: query,
-        sort: 'desc',
-      },
-    },
+    orderBy,
   });
 
   return {
