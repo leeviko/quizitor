@@ -633,6 +633,9 @@ export async function getQuizScores(data: TQuizScoresInput) {
   };
 }
 
+// ----------------
+// Search quizzes
+// ----------------
 export async function searchQuizzes(
   data: TSearchInput,
   session: Session | null,
@@ -652,32 +655,25 @@ export async function searchQuizzes(
       },
     };
   }
-  // Replace spaces with underscore
-  const searchQuery = query.replace(/[\s\n\t]/g, '_');
 
   // --- Sorting ---
   let orderBy: any;
+  let searchQuery = query.trim();
 
   if (sort === Sort.latest || sort === Sort.oldest) {
     orderBy = {
       createdAt: Sort.latest ? 'desc' : 'asc',
     };
   } else {
-    // Order by query relevance.
-    orderBy = {
-      _relevance: {
-        fields: ['title'],
-        search: query,
-        sort: 'desc',
-      },
-    };
+    orderBy = undefined;
   }
 
   // Get total count of quizzes
   const totalCount = await prisma.quiz.count({
     where: {
       title: {
-        search: `*${searchQuery}*`,
+        contains: query,
+        mode: 'insensitive',
       },
       private: false,
     },
@@ -687,6 +683,7 @@ export async function searchQuizzes(
 
   let result: TQuizWithInteractions[];
   if (sort === Sort.mostViewed || sort === Sort.leastViewed) {
+    searchQuery = `%${searchQuery}%`;
     const offset = currPage * limit;
     const orderBy = sort === Sort.mostViewed ? 'DESC' : 'ASC';
 
@@ -704,8 +701,7 @@ export async function searchQuizzes(
           AS "count" 
           ON ("Quiz"."id" = "count"."quizId")
         INNER JOIN "User" ON "Quiz"."authorId" = "User"."id" 
-      WHERE ("Quiz"."private" = false 
-        AND to_tsvector(concat_ws(' ', "Quiz"."title")) @@ to_tsquery($1))  
+      WHERE "Quiz"."private" = false AND "Quiz"."title" ILIKE $1
       GROUP BY  "Interactions"."quizId", "Quiz"."title", "Quiz"."createdAt", 
         "Quiz"."updatedAt", "User"."name", "User"."id",
         "count"."questionCount"
@@ -732,7 +728,8 @@ export async function searchQuizzes(
     take: limit,
     where: {
       title: {
-        search: `*${searchQuery}*`,
+        contains: searchQuery,
+        mode: 'insensitive',
       },
       private: false,
     },
