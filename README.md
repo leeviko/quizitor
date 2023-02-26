@@ -34,4 +34,30 @@ docker run -p 3000:3000 -p 5432:5432 -e DATABASE_URL="postgres://username:passwo
 
 ## Database diagram
 
-![Db diagram](diagram.png)
+![Db diagram](./gallery/diagram.png)
+
+## Images
+
+### Home
+
+![Home](./gallery/home.png)
+
+### Search quizzes
+
+![Search](./gallery/search.png)
+
+### Create quiz
+
+![Create quiz](./gallery/create-quiz.png)
+
+### Start quiz
+
+![Start quiz](./gallery/start-quiz.png)
+
+### Quiz question
+
+![Quiz question](./gallery/quiz.png)
+
+### Quiz score
+
+![Quiz score](./gallery/quiz-finished.png)
