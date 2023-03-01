@@ -33,6 +33,7 @@
     "@trpc/next": "^10.9.0",
     "@trpc/react-query": "^10.9.0",
     "@trpc/server": "^10.9.0",
+    "@upstash/ratelimit": "^0.3.8",
     "bcrypt": "^5.1.0",
     "clsx": "^1.1.1",
     "dotenv-cli": "^6.0.0",
