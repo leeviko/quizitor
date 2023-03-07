@@ -3,14 +3,23 @@ import { AuthHeader, Header } from '~/components/Header';
 import { trpc } from '~/utils/trpc';
 
 import HomeFeed from '~/components/HomeFeed';
+import { useEffect } from 'react';
 
 const Home = () => {
   const { data, status } = useSession();
-  const result = trpc.quiz.recent.useQuery({
-    limit: 6,
-    cursor: null,
-    page: 'next',
-  });
+  const result = trpc.quiz.recent.useQuery(
+    {
+      limit: 6,
+      cursor: null,
+      page: 'next',
+    },
+    { refetchOnWindowFocus: false, enabled: false },
+  );
+
+  useEffect(() => {
+    result.refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
