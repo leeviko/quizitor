@@ -6,14 +6,11 @@ import HomeFeed from '~/components/HomeFeed';
 
 const Home = () => {
   const { data, status } = useSession();
-  const result = trpc.quiz.recent.useQuery(
-    {
-      limit: 6,
-      cursor: null,
-      page: 'next',
-    },
-    { refetchOnWindowFocus: false },
-  );
+  const result = trpc.quiz.recent.useQuery({
+    limit: 6,
+    cursor: null,
+    page: 'next',
+  });
 
   return (
     <>
