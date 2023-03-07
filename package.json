@@ -3,7 +3,7 @@
   "version": "10.9.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "dotenv -e .env.local -- next dev",
     "build": "next build",
     "vercel-build": "prisma generate && DATABASE_URL=\"$DATABASE_URL_MIGRATE\" prisma migrate deploy && next build",
     "start": "next start",
