@@ -204,6 +204,9 @@ export async function deleteQuiz(id: string, user: User) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
 
+  const deleteScores = prisma.scores.deleteMany({
+    where: { quizId: id },
+  });
   const deleteInteractions = prisma.interactions.deleteMany({
     where: { quizId: id },
   });
@@ -215,6 +218,7 @@ export async function deleteQuiz(id: string, user: User) {
   });
 
   const result = await prisma.$transaction([
+    deleteScores,
     deleteInteractions,
     deleteQuestions,
     deleteQuiz,
