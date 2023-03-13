@@ -7,8 +7,8 @@ export const Header = () => {
     <header className={styles.notLogged}>
       <div className={styles.wrapper}>
         <p className={styles.text}>
-          Browse and create <span>quizzes</span> for faster{' '}
-          <span>learning</span>
+          Browse, do and create <span>quizzes</span> to <span>learn</span> new
+          things!
         </p>
         <div className={styles.actions}>
           <button
