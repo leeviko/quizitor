@@ -38,6 +38,7 @@ const Search = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (query === params.query) return;
     if (!query || query.length < 3) return;
     setParams({ limit: 10, currPage: 0, query, sort: activeOption });
     setSubmitted(true);
@@ -118,11 +119,11 @@ const Search = () => {
         </div>
       </form>
       <div className={styles.result}>
-        {search.status === 'success' && (
+        {search.status !== 'error' && params.query && (
           <p>Results for &apos;{params.query}&apos;</p>
         )}
         <div className={styles.items}>
-          {search.isLoading && submitted ? (
+          {search.isFetching || submitted ? (
             <Loader />
           ) : (
             result?.map((item) => (
@@ -136,7 +137,7 @@ const Search = () => {
               />
             ))
           )}
-          {search.status === 'success' && !result?.length && (
+          {search.status === 'success' && !submitted && !result?.length && (
             <div className={common.noResults}>
               <Image
                 src="/images/empty.svg"
