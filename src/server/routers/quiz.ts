@@ -67,7 +67,7 @@ export const quizRouter = router({
   }),
 
   userRecent: protectedProcedure
-    .input(offsetSchema)
+    .input(offsetSchema.omit({ sortBy: true }))
     .query(async ({ input, ctx }) => {
       return getUserRecent(input, ctx.session.user);
     }),
@@ -85,7 +85,7 @@ export const quizRouter = router({
     }),
 
   favorites: protectedProcedure
-    .input(offsetSchema)
+    .input(offsetSchema.omit({ sortBy: true }))
     .query(async ({ input, ctx }) => {
       return getFavoriteQuizzes(input, ctx.session.user.id);
     }),

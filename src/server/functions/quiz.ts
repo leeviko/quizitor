@@ -504,7 +504,10 @@ export async function getQuizList(
 // ----------------
 // Get favorited quizzes
 // ----------------
-export async function getFavoriteQuizzes(data: TOffsetInput, userId: string) {
+export async function getFavoriteQuizzes(
+  data: Omit<TOffsetInput, 'sortBy'>,
+  userId: string,
+) {
   const { currPage, limit } = data;
 
   const result = await prisma.interactions.findMany({
@@ -530,7 +533,10 @@ export async function getFavoriteQuizzes(data: TOffsetInput, userId: string) {
 // ----------------
 // Get user recent
 // ----------------
-export async function getUserRecent(data: TOffsetInput, user: User) {
+export async function getUserRecent(
+  data: Omit<TOffsetInput, 'sortBy'>,
+  user: User,
+) {
   const { currPage, limit } = data;
   const { id: userId } = user;
 

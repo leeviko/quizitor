@@ -8,7 +8,6 @@ const ProfileRecent = () => {
   const result = trpc.quiz.userRecent.useQuery({
     limit: 10,
     currPage: 0,
-    sortBy: '',
   });
 
   return (

@@ -8,7 +8,6 @@ const ProfileFavorites = () => {
   const result = trpc.quiz.favorites.useQuery({
     limit: 10,
     currPage: 0,
-    sortBy: '',
   });
 
   return (
