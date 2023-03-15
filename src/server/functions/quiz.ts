@@ -384,83 +384,121 @@ export async function getUserQuizzes(
 // Get quiz list
 // sorted by views or num of favorites
 // ----------------
-export async function getQuizList(data: TOffsetInput, session: Session | null) {
-  const { currPage, limit, sortBy } = data;
+export async function getQuizList(
+  data: TOffsetInput & { orderBy: 'desc' | 'asc' },
+  session: Session | null,
+) {
+  const { currPage, limit, sortBy, orderBy } = data;
   let userId = null;
-  let quizSelect: any = defaultQuizSelect;
+  let quizSelectWithInteractions;
   if (session) {
     userId = session.user.id;
-    quizSelect = {
+    quizSelectWithInteractions = {
       ...defaultQuizSelect,
-      interactions: userId
-        ? {
-            where: { userId },
-            select: {
-              favorited: true,
-            },
-          }
-        : undefined,
+      interactions: {
+        where: { userId },
+        select: {
+          favorited: true,
+        },
+      },
     };
   }
 
-  const statsResult = await prisma.interactions.groupBy({
-    skip: currPage,
-    take: limit,
-    orderBy: { quizId: 'desc' },
-    by: ['quizId'],
-    where: sortBy === 'favorites' ? { favorited: true } : undefined,
-    _sum: {
-      viewed: true,
-    },
-    _count: {
-      favorited: true,
-    },
-  });
-
-  const result = await prisma.quiz.findMany({
+  const totalCount = await prisma.quiz.count({
     where: {
-      id: { in: statsResult.map(({ quizId }) => quizId) },
       private: false,
     },
-    select: quizSelect,
   });
 
-  // Combine stats with quiz
-  let quizzes = result.map((quiz) => ({
-    ...quiz,
-    stats: {
-      ...statsResult.find((stats) => stats.quizId === quiz.id),
-    },
-  }));
+  const numOfPages = Math.ceil(totalCount / limit);
+  const offset = currPage * limit;
+  let result: TQuizWithInteractions[];
 
-  const srtByViews = (a: any, b: any) => {
-    return b.stats._sum.viewed - a.stats._sum.viewed;
-  };
-  const srtByFavs = (a: any, b: any) => {
-    return b.stats._count.favorited - a.stats._count.favorited;
-  };
-
-  if (sortBy === 'views') {
-    quizzes.sort(srtByViews);
-  } else if (sortBy === 'favorites') {
-    quizzes.sort(srtByFavs);
-  }
-
-  if (quizzes.length < limit) {
-    const fillQuizzes: any = await prisma.quiz.findMany({
-      take: limit - quizzes.length,
+  if (sortBy === 'date') {
+    result = await prisma.quiz.findMany({
+      skip: offset,
+      take: limit,
+      orderBy: { createdAt: orderBy },
       where: {
-        id: { notIn: statsResult.map(({ quizId }) => quizId) },
         private: false,
       },
-      select: quizSelect,
-      orderBy: { createdAt: 'desc' },
+      select: quizSelectWithInteractions ?? defaultQuizSelect,
     });
-
-    quizzes = [...quizzes, ...fillQuizzes];
+    return {
+      status: 200,
+      result,
+      pagination: { currPage, numOfPages },
+    };
   }
 
-  return { status: 200, result: quizzes };
+  if (sortBy === 'views') {
+    result = await prisma.$queryRawUnsafe(
+      `SELECT  SUM("Interactions"."viewed") AS views, "Interactions"."quizId" AS id, 
+                "Quiz"."title", "Quiz"."createdAt", "Quiz"."updatedAt",
+                json_build_object('id', "User"."id", 'name', "User"."name") AS author,
+                json_build_object('questions', "count"."questionCount") as _count
+      FROM "Interactions"
+        INNER JOIN "Quiz" ON "Interactions"."quizId" = "Quiz"."id"
+        LEFT JOIN (SELECT "Questions"."quizId", COUNT(*) 
+          AS "questionCount" FROM "Questions" 
+            GROUP BY "Questions"."quizId") 
+          AS "count" 
+          ON ("Quiz"."id" = "count"."quizId")
+        INNER JOIN "User" ON "Quiz"."authorId" = "User"."id" 
+      WHERE "Quiz"."private" = false
+      GROUP BY  "Interactions"."quizId", "Quiz"."title", "Quiz"."createdAt", 
+        "Quiz"."updatedAt", "User"."name", "User"."id",
+        "count"."questionCount"
+      ORDER BY views ${orderBy}
+      LIMIT  $1
+      OFFSET $2
+      `,
+      limit,
+      offset,
+    );
+
+    return {
+      result,
+      pagination: {
+        currPage,
+        numOfPages,
+      },
+    };
+  }
+
+  result = await prisma.$queryRawUnsafe(
+    `SELECT COALESCE(sum(CASE WHEN "Interactions"."favorited" THEN 1 ELSE 0 END),0) AS favorites, 
+              "Interactions"."quizId" AS id, 
+              "Quiz"."title", "Quiz"."createdAt", "Quiz"."updatedAt",
+              json_build_object('id', "User"."id", 'name', "User"."name") AS author,
+              json_build_object('questions', "count"."questionCount") as _count
+    FROM "Interactions"
+      INNER JOIN "Quiz" ON "Interactions"."quizId" = "Quiz"."id"
+      LEFT JOIN (SELECT "Questions"."quizId", COUNT(*) 
+        AS "questionCount" FROM "Questions" 
+          GROUP BY "Questions"."quizId") 
+        AS "count" 
+        ON ("Quiz"."id" = "count"."quizId")
+      INNER JOIN "User" ON "Quiz"."authorId" = "User"."id" 
+    WHERE "Quiz"."private" = false
+    GROUP BY  "Interactions"."quizId", "Quiz"."title", "Quiz"."createdAt", 
+      "Quiz"."updatedAt", "User"."name", "User"."id",
+      "count"."questionCount"
+    ORDER BY favorites ${orderBy}
+    LIMIT  $1
+    OFFSET $2
+    `,
+    limit,
+    offset,
+  );
+
+  return {
+    result,
+    pagination: {
+      currPage,
+      numOfPages,
+    },
+  };
 }
 
 // ----------------

@@ -50,7 +50,7 @@ const HomeFeed = ({ result, loading, title }: Props) => {
             ))}
             {quizzes?.length === 6 && (
               <button className={styles.browseBtn}>
-                <Link href="/browse">See more</Link>
+                <Link href="/search/views">See more</Link>
               </button>
             )}
           </>

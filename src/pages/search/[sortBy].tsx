@@ -1,13 +1,14 @@
 import Image from 'next/image';
-import { FormEvent, useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import Loader from '~/components/Loader';
 import Pagination from '~/components/Pagination';
 import QuizCard from '~/components/QuizCard';
-import { Sort, TQuizWithInteractions } from '~/types/quiz';
+import { TQuizWithInteractions } from '~/types/quiz';
 import { trpc } from '~/utils/trpc';
 
 import styles from '~/styles/Search.module.css';
 import common from '~/styles/Common.module.css';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 type TPagination = {
@@ -15,44 +16,35 @@ type TPagination = {
   numOfPages: number;
 };
 
+type TList = 'favorites' | 'views' | 'date';
+
 const Search = () => {
-  const [query, setQuery] = useState('');
+  const router = useRouter();
+  const sortBy = router.query.sortBy as TList;
   const [ddActive, setDdActive] = useState(false);
-  const sortOptions: Sort[] = [
-    Sort.best,
-    Sort.latest,
-    Sort.oldest,
-    Sort.mostViewed,
-    Sort.leastViewed,
-  ];
+  const [activeOption, setActiveOption] = useState<'desc' | 'asc'>('desc');
   const [params, setParams] = useState({
     limit: 10,
     currPage: 0,
-    query: '',
-    sort: '',
+    sortBy,
+    orderBy: activeOption,
   });
-  const [submitted, setSubmitted] = useState(false);
-  const [activeOption, setActiveOption] = useState(sortOptions[0] ?? '');
   const [result, setResult] = useState<TQuizWithInteractions[] | undefined>();
   const [pagination, setPagination] = useState<TPagination | undefined>();
-  const search = trpc.quiz.search.useQuery(params, { enabled: false });
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (query === params.query) return;
-    if (!query || query.length < 3) return;
-    setParams({ limit: 10, currPage: 0, query, sort: activeOption });
-    setSubmitted(true);
-  };
+  const search = trpc.quiz.quizList.useQuery(params, {
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
-    if (!submitted) return;
-    const fetch = async () => {
-      await search.refetch();
-    };
-    fetch();
-    setSubmitted(false);
-  }, [search, submitted]);
+    if (!['favorites', 'views', 'date'].includes(sortBy)) {
+      router.replace('/search');
+    }
+  }, [sortBy, router]);
+
+  useEffect(() => {
+    if (activeOption === params.orderBy && sortBy === params.sortBy) return;
+    setParams({ ...params, orderBy: activeOption, sortBy });
+  }, [activeOption, sortBy, params]);
 
   useEffect(() => {
     if (search.data) {
@@ -61,45 +53,38 @@ const Search = () => {
     }
   }, [search.data]);
 
-  const handleChangeOpt = (opt: Sort) => {
+  const handleChangeOpt = (
+    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
+    opt: 'desc' | 'asc',
+  ) => {
+    e.preventDefault();
     setDdActive(false);
     setActiveOption(opt);
   };
 
   const handlePagination = async (newPage: number) => {
     if (!pagination || pagination.numOfPages === 0) return;
-    // (newPage is off by one)
     if (newPage < 0 || newPage === pagination.numOfPages) return;
     setParams({
       ...params,
       currPage: newPage,
     });
-    setSubmitted(true);
   };
 
   return (
     <div className={`center ${styles.container}`}>
       <div className={styles.sidebar}>
         <h2>Sort by:</h2>
-        <Link href="/search/views">Views</Link>
-        <Link href="/search/favorites">Favorites</Link>
-        <Link href="/search/date">Date</Link>
+        <Link href="views">Views</Link>
+        <Link href="favorites">Favorites</Link>
+        <Link href="date">Date</Link>
       </div>
       <div className={styles.resultContainer}>
-        <form onSubmit={handleSubmit} className={styles.inputField}>
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Find a quiz"
-          />
-          <button type="submit" className={`${styles.submitBtn}`}>
-            <Image
-              src="/icons/search.svg"
-              alt="search"
-              width={24}
-              height={24}
-            />
-          </button>
+        <Link href="/search" className={styles.back}>
+          <Image src="/icons/back.svg" alt="back" width={24} height={24} /> Back
+          to search
+        </Link>
+        <form className={styles.inputField}>
           <div
             className={`${styles.dropdown} ${
               ddActive ? styles.open : styles.closed
@@ -110,7 +95,9 @@ const Search = () => {
               onClick={() => setDdActive(!ddActive)}
               className={styles.selectBtn}
             >
-              <span>{activeOption}</span>
+              <span>
+                {activeOption.charAt(0).toUpperCase() + activeOption.slice(1)}
+              </span>
               <Image
                 src="/icons/expand.svg"
                 alt="expand"
@@ -119,24 +106,21 @@ const Search = () => {
               />
             </button>
             <div className={styles.dropdownOpts}>
-              {sortOptions.map((opt) => (
+              {['desc', 'asc'].map((opt) => (
                 <button
                   key={opt}
-                  onClick={() => handleChangeOpt(opt)}
+                  onClick={(e) => handleChangeOpt(e, opt as 'desc' | 'asc')}
                   className={`${activeOption === opt && styles.active}`}
                 >
-                  {opt}
+                  {opt === 'desc' ? 'Descending' : 'Ascending'}
                 </button>
               ))}
             </div>
           </div>
         </form>
         <div className={styles.result}>
-          {search.status !== 'error' && params.query && (
-            <p>Results for &apos;{params.query}&apos;</p>
-          )}
           <div className={styles.items}>
-            {search.isFetching || submitted ? (
+            {search.isFetching ? (
               <Loader />
             ) : (
               result?.map((item) => (
@@ -152,7 +136,7 @@ const Search = () => {
                 />
               ))
             )}
-            {search.status === 'success' && !submitted && !result?.length && (
+            {search.status === 'success' && !result?.length && (
               <div className={common.noResults}>
                 <Image
                   src="/images/empty.svg"

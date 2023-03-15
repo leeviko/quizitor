@@ -41,7 +41,7 @@ export const favoriteInputSchema = z.object({
 export const offsetSchema = z.object({
   currPage: z.number().default(0),
   limit: z.number().max(20).default(10),
-  sortBy: z.string(),
+  sortBy: z.enum(['favorites', 'views', 'date']),
 });
 export type TOffsetInput = z.infer<typeof offsetSchema>;
 

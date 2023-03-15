@@ -1,6 +1,42 @@
 .container {
+  display: flex;
   color: var(--text);
   width: 100%;
+}
+
+.sidebar {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  left: -150px;
+}
+
+.sidebar h2 {
+  line-height: 2;
+}
+
+.sidebar a {
+  width: fit-content;
+  margin: 0.15rem 0;
+  color: var(--white);
+}
+
+.resultContainer {
+  width: 100%;
+}
+
+.back img {
+  filter: var(--white-filter);
+}
+
+.back {
+  width: fit-content;
+  color: var(--white);
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
 }
 
 .inputField {

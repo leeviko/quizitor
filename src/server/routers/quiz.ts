@@ -79,7 +79,7 @@ export const quizRouter = router({
     }),
 
   quizList: publicProcedure
-    .input(offsetSchema)
+    .input(offsetSchema.extend({ orderBy: z.enum(['desc', 'asc']) }))
     .query(async ({ input, ctx }) => {
       return getQuizList(input, ctx.session);
     }),

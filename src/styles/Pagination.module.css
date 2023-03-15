@@ -1,5 +1,8 @@
 .pagination {
-  margin: 2rem 0;
+  position: absolute;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .wrapper {
