@@ -62,7 +62,9 @@ const QuizCard = ({
           {title.length > titleLength && '...'}
         </Link>
       </h3>
-      <span className={styles.tag}>{questionCount} Questions</span>
+      <span className={styles.tag}>
+        {questionCount} Question{questionCount > 1 ? 's' : ''}
+      </span>
       {status === 'authenticated' && (
         <span className={styles.favorite} onClick={favoriteQuiz}>
           {favorite ? (
