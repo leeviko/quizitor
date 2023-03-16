@@ -48,7 +48,7 @@ const SignUp: NextPage = () => {
   return (
     <div className={`${styles.container} center`}>
       <Head>
-        <title>Create an account</title>
+        <title>Quizitor - Create an account</title>
       </Head>
       <div className={styles.wrapper}>
         <h1 className={styles.title}>Create an account</h1>

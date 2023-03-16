@@ -3,6 +3,7 @@ import ProfileLayout from '~/layouts/ProfileLayout';
 import { trpc } from '~/utils/trpc';
 
 import styles from '~/styles/ProfileCards.module.css';
+import Head from 'next/head';
 
 const ProfileFavorites = () => {
   const result = trpc.quiz.favorites.useQuery({
@@ -11,24 +12,29 @@ const ProfileFavorites = () => {
   });
 
   return (
-    <ProfileLayout>
-      <div className={styles.content}>
-        <div className={styles.items}>
-          {result.isLoading
-            ? [...Array(6)].map((_, i) => <QuizCardSkeleton key={i} />)
-            : result.data?.result.map((item) => (
-                <QuizCard
-                  key={item.quiz.id}
-                  id={item.quiz.id}
-                  authorName={item.quiz.author.name}
-                  title={item.quiz.title}
-                  questionCount={item.quiz._count.questions}
-                  favorited={item.favorited}
-                />
-              ))}
+    <>
+      <Head>
+        <title>Quizitor - Favorites</title>
+      </Head>
+      <ProfileLayout>
+        <div className={styles.content}>
+          <div className={styles.items}>
+            {result.isLoading
+              ? [...Array(6)].map((_, i) => <QuizCardSkeleton key={i} />)
+              : result.data?.result.map((item) => (
+                  <QuizCard
+                    key={item.quiz.id}
+                    id={item.quiz.id}
+                    authorName={item.quiz.author.name}
+                    title={item.quiz.title}
+                    questionCount={item.quiz._count.questions}
+                    favorited={item.favorited}
+                  />
+                ))}
+          </div>
         </div>
-      </div>
-    </ProfileLayout>
+      </ProfileLayout>
+    </>
   );
 };
 

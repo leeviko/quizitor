@@ -4,6 +4,7 @@ import { trpc } from '~/utils/trpc';
 
 import styles from '~/styles/ProfileCards.module.css';
 import { useSession } from 'next-auth/react';
+import Head from 'next/head';
 
 const ProfileMyQuizzes = () => {
   const { data } = useSession();
@@ -15,26 +16,31 @@ const ProfileMyQuizzes = () => {
   });
 
   return (
-    <ProfileLayout>
-      <div className={styles.content}>
-        <div className={styles.items}>
-          {result.isLoading
-            ? [...Array(6)].map((_, i) => <QuizCardSkeleton key={i} />)
-            : result.data?.result.map((item) => (
-                <QuizCard
-                  key={item.id}
-                  id={item.id}
-                  authorName={item.author.name}
-                  title={item.title}
-                  questionCount={item._count.questions}
-                  favorited={
-                    item.interactions && item.interactions[0]?.favorited
-                  }
-                />
-              ))}
+    <>
+      <Head>
+        <title>Quizitor - My quizzes</title>
+      </Head>
+      <ProfileLayout>
+        <div className={styles.content}>
+          <div className={styles.items}>
+            {result.isLoading
+              ? [...Array(6)].map((_, i) => <QuizCardSkeleton key={i} />)
+              : result.data?.result.map((item) => (
+                  <QuizCard
+                    key={item.id}
+                    id={item.id}
+                    authorName={item.author.name}
+                    title={item.title}
+                    questionCount={item._count.questions}
+                    favorited={
+                      item.interactions && item.interactions[0]?.favorited
+                    }
+                  />
+                ))}
+          </div>
         </div>
-      </div>
-    </ProfileLayout>
+      </ProfileLayout>
+    </>
   );
 };
 

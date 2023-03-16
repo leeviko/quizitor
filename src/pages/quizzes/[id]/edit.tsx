@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import ModifyQuiz from '~/components/ModifyQuiz';
 import { useState } from 'react';
 import Dialog, { TDialogContent } from '~/components/Dialog';
+import Head from 'next/head';
 
 const EditQuiz = () => {
   const router = useRouter();
@@ -53,6 +54,9 @@ const EditQuiz = () => {
 
   return (
     <>
+      <Head>
+        <title>Quizitor - Edit quiz</title>
+      </Head>
       {dialogOpen && <Dialog {...dialogContent} />}
       {data?.result && (
         <ModifyQuiz

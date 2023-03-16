@@ -16,6 +16,7 @@ import Loader from '~/components/Loader';
 
 import styles from '~/styles/QuizPage.module.css';
 import common from '~/styles/Common.module.css';
+import Head from 'next/head';
 
 type TQuestion = {
   id: string;
@@ -362,82 +363,87 @@ const Quiz = () => {
   };
 
   return (
-    <div className={`${styles.container} ${styles[mode]}`}>
-      <h1 className={styles.mainTitle}>
-        {mode === 'start' ? 'Start' : quiz?.title}
-      </h1>
-      <div className={styles.wrapper}>
-        <div className={`${styles.mainCard} ${styles.card}`}>
-          <div className={styles.cardWrapper}>
-            {isLoading || !quiz ? (
-              <div className={styles.loaderContainer}>
-                <Loader />
-              </div>
-            ) : (
-              <>
-                {mode === 'start' && (
-                  <StartQuiz
-                    title={quiz.title}
-                    questionCount={quiz.questions.length}
-                    setMode={setMode}
-                  />
-                )}
-                {mode === 'question' && (
-                  <Question
-                    isLoading={isLoading}
-                    summaryLoading={summaryLoading}
-                    questionIndex={currQuestionIndex}
-                    handleQuestionChange={handleQuestionChange}
-                    quiz={quiz}
-                    selected={selected}
-                    setSelected={setSelected}
-                  />
-                )}
-                {mode === 'finish' && summary && (
-                  <FinishQuiz
-                    score={`${summary.score.recent}/${summary.result.length}`}
-                    bestScore={`${summary.score.best}/${summary.result.length}`}
-                    tries={summary.score.tries}
-                    setMode={setMode}
-                  />
-                )}
-              </>
-            )}
+    <>
+      <Head>
+        <title>Quizitor - {quiz ? quiz.title : 'Loading...'}</title>
+      </Head>
+      <div className={`${styles.container} ${styles[mode]}`}>
+        <h1 className={styles.mainTitle}>
+          {mode === 'start' ? 'Start' : quiz?.title}
+        </h1>
+        <div className={styles.wrapper}>
+          <div className={`${styles.mainCard} ${styles.card}`}>
+            <div className={styles.cardWrapper}>
+              {isLoading || !quiz ? (
+                <div className={styles.loaderContainer}>
+                  <Loader />
+                </div>
+              ) : (
+                <>
+                  {mode === 'start' && (
+                    <StartQuiz
+                      title={quiz.title}
+                      questionCount={quiz.questions.length}
+                      setMode={setMode}
+                    />
+                  )}
+                  {mode === 'question' && (
+                    <Question
+                      isLoading={isLoading}
+                      summaryLoading={summaryLoading}
+                      questionIndex={currQuestionIndex}
+                      handleQuestionChange={handleQuestionChange}
+                      quiz={quiz}
+                      selected={selected}
+                      setSelected={setSelected}
+                    />
+                  )}
+                  {mode === 'finish' && summary && (
+                    <FinishQuiz
+                      score={`${summary.score.recent}/${summary.result.length}`}
+                      bestScore={`${summary.score.best}/${summary.result.length}`}
+                      tries={summary.score.tries}
+                      setMode={setMode}
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+          <div className={`${styles.rightCard} ${styles.card}`}>
+            <div className={styles.cardWrapper}>
+              {isLoading || !quiz ? (
+                <div className={styles.loaderContainer}>
+                  <Loader />
+                </div>
+              ) : (
+                <StatsCard quiz={quiz} session={session} id={id} />
+              )}
+            </div>
           </div>
         </div>
-        <div className={`${styles.rightCard} ${styles.card}`}>
-          <div className={styles.cardWrapper}>
-            {isLoading || !quiz ? (
-              <div className={styles.loaderContainer}>
-                <Loader />
-              </div>
-            ) : (
-              <StatsCard quiz={quiz} session={session} id={id} />
+        <h1 className={styles.bottomTitle}>
+          {mode === 'finish' && 'Your Result'}
+          {mode === 'start' && 'Recent scores'}
+        </h1>
+        <div className={`${styles.wrapper} ${styles.bottom}`}>
+          <div className={`${styles.bottomCard} ${styles.card}`}>
+            {mode === 'start' &&
+              (isLoading || !quiz ? (
+                <div className={styles.loaderContainer}>
+                  <Loader />
+                </div>
+              ) : (
+                <RecentScores quiz={quiz} />
+              ))}
+            {mode === 'finish' && summary && (
+              <QuizAnswers results={summary.result} />
             )}
           </div>
+          <div className={`${styles.rightCard} ${styles.card}`}></div>
         </div>
       </div>
-      <h1 className={styles.bottomTitle}>
-        {mode === 'finish' && 'Your Result'}
-        {mode === 'start' && 'Recent scores'}
-      </h1>
-      <div className={`${styles.wrapper} ${styles.bottom}`}>
-        <div className={`${styles.bottomCard} ${styles.card}`}>
-          {mode === 'start' &&
-            (isLoading || !quiz ? (
-              <div className={styles.loaderContainer}>
-                <Loader />
-              </div>
-            ) : (
-              <RecentScores quiz={quiz} />
-            ))}
-          {mode === 'finish' && summary && (
-            <QuizAnswers results={summary.result} />
-          )}
-        </div>
-        <div className={`${styles.rightCard} ${styles.card}`}></div>
-      </div>
-    </div>
+    </>
   );
 };
 

@@ -39,7 +39,7 @@ const Login: NextPage = () => {
   return (
     <div className={`${styles.container} center`}>
       <Head>
-        <title>Login</title>
+        <title>Quizitor - Login</title>
       </Head>
       <div className={styles.wrapper}>
         <h1 className={styles.title}>Login to your account</h1>
