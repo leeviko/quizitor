@@ -167,7 +167,7 @@
   width: 0;
 }
 
-.rightCard .cardWrapper > div:last-of-type {
+.rightCard .stat:last-of-type {
   margin: 1rem 0 0 0;
 }
 

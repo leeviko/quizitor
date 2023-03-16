@@ -48,7 +48,7 @@ type FinishQuizProps = {
 };
 
 type StatsCardProps = {
-  quiz: TQuizWithStats | undefined;
+  quiz: TQuizWithStats;
   session: Session | null;
   id: string;
 };
@@ -69,7 +69,7 @@ const StartQuiz = ({ title, questionCount, setMode }: StartQuizProps) => {
     <>
       <h1>{title}</h1>
       <p className={styles.questionCount}>
-        {questionCount} <span>Questions</span>
+        {questionCount} <span>Question{questionCount > 1 ? 's' : ''}</span>
       </p>
       <button
         className={`${common.defaultBtn} ${common.enabled}`}
@@ -176,15 +176,15 @@ const FinishQuiz = ({ score, tries, bestScore, setMode }: FinishQuizProps) => {
 const StatsCard = ({ quiz, session, id }: StatsCardProps) => {
   return (
     <>
-      <div>
-        <p>{quiz?.stats.views}</p>
+      <div className={styles.stat}>
+        <p>{quiz.stats.views}</p>
         <span>Views</span>
       </div>
-      <div>
-        <p>{quiz?.stats.favorites}</p>
+      <div className={styles.stat}>
+        <p>{quiz.stats.favorites}</p>
         <span>Favorites</span>
       </div>
-      {session?.user.id === quiz?.author.id && (
+      {session?.user.id === quiz.author.id && (
         <button className={styles.editBtn}>
           <Image src="/icons/edit.svg" alt="edit" width={24} height={24} />
           <Link href={`${id}/edit`}>Edit</Link>
@@ -194,18 +194,12 @@ const StatsCard = ({ quiz, session, id }: StatsCardProps) => {
   );
 };
 
-const RecentScores = ({
-  quizId,
-  questionCount,
-}: {
-  quizId: string;
-  questionCount: number;
-}) => {
+const RecentScores = ({ quiz }: { quiz: TQuizWithStats }) => {
   const usernameLength = 20;
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     trpc.quiz.quizScores.useInfiniteQuery(
       {
-        quizId,
+        quizId: quiz.id,
         limit: 10,
         page: 'next',
       },
@@ -248,7 +242,7 @@ const RecentScores = ({
                       {item.user.name.length > usernameLength && '...'}
                     </td>
                     <td>
-                      {item.recent}/{questionCount}
+                      {item.recent}/{quiz.questions.length}
                     </td>
                     <td>{prettifyDate(item.updatedAt.getTime())}</td>
                   </tr>
@@ -375,7 +369,11 @@ const Quiz = () => {
       <div className={styles.wrapper}>
         <div className={`${styles.mainCard} ${styles.card}`}>
           <div className={styles.cardWrapper}>
-            {quiz && (
+            {isLoading || !quiz ? (
+              <div className={styles.loaderContainer}>
+                <Loader />
+              </div>
+            ) : (
               <>
                 {mode === 'start' && (
                   <StartQuiz
@@ -409,7 +407,13 @@ const Quiz = () => {
         </div>
         <div className={`${styles.rightCard} ${styles.card}`}>
           <div className={styles.cardWrapper}>
-            <StatsCard quiz={quiz} session={session} id={id} />
+            {isLoading || !quiz ? (
+              <div className={styles.loaderContainer}>
+                <Loader />
+              </div>
+            ) : (
+              <StatsCard quiz={quiz} session={session} id={id} />
+            )}
           </div>
         </div>
       </div>
@@ -419,12 +423,14 @@ const Quiz = () => {
       </h1>
       <div className={`${styles.wrapper} ${styles.bottom}`}>
         <div className={`${styles.bottomCard} ${styles.card}`}>
-          {mode === 'start' && quiz && (
-            <RecentScores
-              quizId={quiz.id}
-              questionCount={quiz.questions.length}
-            />
-          )}
+          {mode === 'start' &&
+            (isLoading || !quiz ? (
+              <div className={styles.loaderContainer}>
+                <Loader />
+              </div>
+            ) : (
+              <RecentScores quiz={quiz} />
+            ))}
           {mode === 'finish' && summary && (
             <QuizAnswers results={summary.result} />
           )}
