@@ -20,11 +20,12 @@ type TResult =
 
 type Props = {
   result: TResult;
+  status: 'loading' | 'error' | 'success';
   loading: boolean;
   title: string;
 };
 
-const HomeFeed = ({ result, loading, title }: Props) => {
+const HomeFeed = ({ result, status, loading, title }: Props) => {
   const quizzes = result?.result;
 
   return (
@@ -63,7 +64,11 @@ const HomeFeed = ({ result, loading, title }: Props) => {
               width={144}
               height={144}
             />
-            <span>No quizzes found</span>
+            <span>
+              {status === 'error'
+                ? 'Something went wrong, please try again later'
+                : 'No quizzes found'}
+            </span>
           </div>
         )}
       </div>

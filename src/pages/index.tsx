@@ -31,6 +31,7 @@ const Home = () => {
                 <AuthHeader username={data.user.name} />
                 <HomeFeed
                   result={result.data}
+                  status={result.status}
                   loading={result.isFetching}
                   title="Recent"
                 />

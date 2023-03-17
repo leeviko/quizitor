@@ -4,7 +4,7 @@ import { Redis } from '@upstash/redis';
 
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
-  limiter: Ratelimit.cachedFixedWindow(10, '10 s'),
+  limiter: Ratelimit.cachedFixedWindow(15, '10 s'),
   ephemeralCache: new Map(),
   analytics: true,
 });
@@ -18,22 +18,23 @@ export default async function middleware(
   }
   const ip = request.ip ?? '127.0.0.1';
 
-  const { success, pending, limit, reset, remaining } = await ratelimit.limit(
+  const { success, pending } = await ratelimit.limit(
     `ratelimit_middleware_${ip}`,
   );
   event.waitUntil(pending);
 
-  const res = success
-    ? NextResponse.next()
-    : // TODO: redirect
-      NextResponse.redirect(new URL('/api/blocked', request.url));
+  if (success) {
+    return NextResponse.next();
+  }
 
-  res.headers.set('X-RateLimit-Limit', limit.toString());
-  res.headers.set('X-RateLimit-Remaining', remaining.toString());
-  res.headers.set('X-RateLimit-Reset', reset.toString());
-  return res;
+  return new NextResponse(
+    JSON.stringify({
+      msg: 'Too many requests. Try again later.',
+    }),
+    { status: 429, headers: { 'content-type': 'application/json' } },
+  );
 }
 
 export const config = {
-  matcher: '/api/:path*',
+  matcher: ['/api/:path((?!auth/session|blocked).*)'],
 };
