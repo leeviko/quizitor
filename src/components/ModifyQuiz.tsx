@@ -150,7 +150,7 @@ const ModifyQuiz = ({ quiz, deleteQuiz, mutateAsync, isLoading }: Props) => {
               setIsPrivate={setIsPrivate}
               isPrivate={isPrivate}
               title={title}
-              questions={questions}
+              questions={quiz?.questions ?? questions}
               setQuestions={setQuestions}
               mode={mode}
               setEditQue={setEditQue}
