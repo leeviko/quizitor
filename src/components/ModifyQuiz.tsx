@@ -26,17 +26,23 @@ export type TEditQuestion = TQuestion & {
 
 type Props = {
   quiz?: TQuizWithStats;
+  edit: boolean;
   deleteQuiz?: () => void;
   mutateAsync: any;
   isLoading: boolean;
 };
 
-const ModifyQuiz = ({ quiz, deleteQuiz, mutateAsync, isLoading }: Props) => {
+const ModifyQuiz = ({
+  quiz,
+  edit,
+  deleteQuiz,
+  mutateAsync,
+  isLoading,
+}: Props) => {
   const router = useRouter();
   const [errors, setErrors] = useState<string[]>([]);
   const [mode, setMode] = useState<Mode>(Mode.Overview);
   const [editQue, setEditQue] = useState<TEditQuestion | null>(null);
-  const [edit, setEdit] = useState<boolean>();
   const [title, setTitle] = useState('');
   const [isPrivate, setIsPrivate] = useState(true);
   const [questions, setQuestions] = useState<Array<TQuestion>>([]);
@@ -47,13 +53,13 @@ const ModifyQuiz = ({ quiz, deleteQuiz, mutateAsync, isLoading }: Props) => {
   });
 
   useEffect(() => {
-    if (!quiz) return setEdit(false);
+    if (!edit) return;
+    if (!quiz) return;
 
-    setEdit(true);
     setTitle(quiz.title);
     setIsPrivate(quiz.private);
     setQuestions(quiz.questions);
-  }, [quiz]);
+  }, [edit, quiz]);
 
   const handleSave = async () => {
     let errs: string[] = [];
@@ -138,7 +144,7 @@ const ModifyQuiz = ({ quiz, deleteQuiz, mutateAsync, isLoading }: Props) => {
     >
       <div style={{ display: 'flex', height: '100%' }}>
         {dialogOpen && <Dialog {...dialogContent} />}
-        {isLoading ? (
+        {isLoading || (edit && !quiz) ? (
           <Loader />
         ) : (
           <>

@@ -58,14 +58,13 @@ const EditQuiz = () => {
         <title>Quizitor - Edit quiz</title>
       </Head>
       {dialogOpen && <Dialog {...dialogContent} />}
-      {data?.result && (
-        <ModifyQuiz
-          quiz={data.result}
-          deleteQuiz={confirmDelete}
-          mutateAsync={mutateAsync}
-          isLoading={isLoading}
-        />
-      )}
+      <ModifyQuiz
+        quiz={data?.result}
+        edit={true}
+        deleteQuiz={confirmDelete}
+        mutateAsync={mutateAsync}
+        isLoading={isLoading}
+      />
     </>
   );
 };

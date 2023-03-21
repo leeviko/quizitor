@@ -10,7 +10,12 @@ const CreateQuiz = () => {
       <Head>
         <title>Quizitor - Create a quiz</title>
       </Head>
-      <ModifyQuiz mutateAsync={mutateAsync} isLoading={isLoading} />;
+      <ModifyQuiz
+        edit={false}
+        mutateAsync={mutateAsync}
+        isLoading={isLoading}
+      />
+      ;
     </>
   );
 };
