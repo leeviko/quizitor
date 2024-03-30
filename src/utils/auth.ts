@@ -3,6 +3,7 @@ import { NextAuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
 import { userInputSchema } from '~/types/user';
+import { Prisma, User } from '@prisma/client';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -15,9 +16,18 @@ export const authOptions: NextAuthOptions = {
       authorize: async (credentials) => {
         const creds = await userInputSchema.parseAsync(credentials);
 
-        const user = await prisma.user.findFirst({
-          where: { name: creds.name },
-        });
+        let user: User | null = null;
+        try {
+          user = await prisma.user.findFirst({
+            where: { name: creds.name },
+          });
+        } catch (err) {
+          if (err instanceof Prisma.PrismaClientInitializationError) {
+            throw new Error(
+              'An unexpected error occured, please try again later.',
+            );
+          }
+        }
 
         if (!user) {
           throw new Error('Wrong username or password');

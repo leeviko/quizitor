@@ -231,7 +231,7 @@ const RecentScores = ({ quiz }: { quiz: TQuizWithStats }) => {
               <tr>
                 <th style={{ textAlign: 'left' }}>Username</th>
                 <th>Score</th>
-                <th>Date</th>
+                <th>Played</th>
               </tr>
             </thead>
             <tbody>

@@ -40,8 +40,9 @@ const Search = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (query === params.query) return;
+
     if (!query || query.length < 3) return;
+
     setParams({ limit: 10, currPage: 0, query, sort: activeOption });
     setSubmitted(true);
   };
@@ -56,11 +57,11 @@ const Search = () => {
   }, [search, submitted]);
 
   useEffect(() => {
-    if (search.data) {
+    if (search.data && !search.isError) {
       setResult(search.data.result);
       setPagination(search.data.pagination);
     }
-  }, [search.data]);
+  }, [search.data, search.isError]);
 
   const handleChangeOpt = (opt: Sort) => {
     setDdActive(false);
@@ -157,17 +158,23 @@ const Search = () => {
                   />
                 ))
               )}
-              {search.status === 'success' && !submitted && !result?.length && (
-                <div className={common.noResults}>
-                  <Image
-                    src="/images/empty.svg"
-                    alt="Empty"
-                    width={144}
-                    height={144}
-                  />
-                  <span>No quizzes found.</span>
-                </div>
-              )}
+              {(search.status === 'success' || search.status === 'error') &&
+                !submitted &&
+                !result?.length && (
+                  <div className={common.noResults}>
+                    <Image
+                      src="/images/empty.svg"
+                      alt="Empty"
+                      width={144}
+                      height={144}
+                    />
+                    <span>
+                      {search.status === 'error'
+                        ? search.error.message
+                        : 'No quizzes found.'}
+                    </span>
+                  </div>
+                )}
             </div>
           </div>
         </div>

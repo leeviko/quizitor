@@ -1,11 +1,12 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["filteredRelationCount", "extendedWhereUnique", "fullTextSearch"]
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
   provider = "postgres"
   url      = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_MIGRATE")
 }
 
 model User {

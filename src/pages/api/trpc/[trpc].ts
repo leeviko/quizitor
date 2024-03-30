@@ -12,8 +12,7 @@ export default createNextApiHandler({
 
   onError({ error }) {
     if (error.code === 'INTERNAL_SERVER_ERROR') {
-      // send to bug reporting
-      console.error('Something went wrong', error);
+      error.message = 'An unexpected error occurred, please try again later.';
     }
   },
   /**

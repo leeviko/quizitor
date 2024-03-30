@@ -24,10 +24,11 @@ const ProfileRecent = () => {
               : result.data?.result.map((item) => (
                   <QuizCard
                     key={item.id}
-                    id={item.id}
+                    id={item.quiz.id}
                     authorName={item.quiz.author.name}
                     title={item.quiz.title}
                     questionCount={item.quiz._count.questions}
+                    favorited={item.favorited}
                   />
                 ))}
           </div>

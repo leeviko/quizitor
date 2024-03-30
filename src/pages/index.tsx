@@ -17,9 +17,9 @@ const Home = () => {
   );
 
   useEffect(() => {
-    result.refetch();
+    if (status === 'authenticated') result.refetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [status]);
 
   return (
     <>
